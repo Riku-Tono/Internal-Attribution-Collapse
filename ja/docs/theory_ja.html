@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>内的帰属崩壊 — theory2.html</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+SC:wght@400;600&family=Fira+Code:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<script>MathJax={tex:{inlineMath:[['$','$'],['\\(','\\)']],displayMath:[['$$','$$'],['\\[','\\]']],tags:'ams'},options:{skipHtmlTags:['script','noscript','style','textarea']}};</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js" crossorigin="anonymous"></script>
+<style>
+:root {
+  --cream:   #e9e4d9;
+  --cream2:  #ddd8cd;
+  --cream3:  #f2ede4;
+  --ink:     #1a1713;
+  --ink-mid: #4a453e;
+  --ink-dim: #7a746c;
+  --blue:    #3d6178;
+  --blue2:   #5a8aa8;
+  --rust:    #8a4030;
+  --green:   #3a6448;
+  --rule:    rgba(26,23,19,.14);
+  --mono:    'Fira Code','Courier New',monospace;
+  --serif:   'EB Garamond','Georgia',serif;
+  --display: 'Cormorant Garamond','Georgia',serif;
+  --sc:      'Cormorant SC','Cormorant Garamond',serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.125rem;
+  line-height: 1.85;
+  font-weight: 400;
+}
+
+/* ── LAYOUT ── */
+.page { max-width: 51.25rem; margin: 0 auto; padding: 0 3rem 7.5rem; }
+@media (max-width: 41.25rem) { .page { padding: 0 1.375rem 5rem; } }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2rem 0 0;
+  margin-bottom: 4rem;
+}
+.top-nav a {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-decoration: none;
+  transition: color .2s;
+}
+.top-nav a:hover { color: var(--ink); }
+
+/* ── DOCUMENT HEADER ── */
+.doc-header { margin-bottom: 4rem; }
+
+.doc-tag {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5.5vw, 3.125rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.subtitle {
+  font-family: var(--display);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--blue);
+  line-height: 1.55;
+  margin-bottom: 2rem;
+  max-width: 40rem;
+}
+
+.meta {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  line-height: 2.2;
+}
+.meta a { color: var(--blue); text-decoration: none; }
+.meta a:hover { text-decoration: underline; }
+
+/* ── NAV CARDS ── */
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 0.0625rem solid var(--rule);
+  margin-bottom: 4.5rem;
+}
+@media (max-width: 36.25rem) { .nav-cards { grid-template-columns: 1fr; } }
+
+.nav-card {
+  padding: 1.5rem 1.625rem 1.75rem;
+  border-right: 0.0625rem solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s;
+}
+.nav-card:last-child { border-right: none; }
+.nav-card:hover { background: var(--cream2); }
+.nav-card.active { background: var(--ink); color: var(--cream); }
+
+.nav-card-num {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.625rem;
+}
+.nav-card.active .nav-card-num { color: rgba(233,228,217,.5); }
+
+.nav-card-title {
+  font-family: var(--sc);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+}
+
+.nav-card-file {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  color: var(--ink-dim);
+}
+.nav-card.active .nav-card-file { color: rgba(233,228,217,.5); }
+
+/* ── TOC ── */
+.toc {
+  border-top: 0.0625rem solid var(--rule);
+  border-bottom: 0.0625rem solid var(--rule);
+  padding: 1.625rem 0;
+  margin-bottom: 4.5rem;
+}
+.toc-title {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1rem;
+}
+.toc ol { padding-left: 1.375rem; line-height: 2.4; }
+.toc a {
+  color: var(--ink-mid);
+  text-decoration: none;
+  font-size: 0.9375rem;
+  font-family: var(--serif);
+}
+.toc a:hover { color: var(--blue); }
+
+/* ── SECTIONS ── */
+section { margin-bottom: 4.5rem; }
+
+h2 {
+  font-family: var(--sc);
+  font-size: 0.84375rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid var(--rule);
+}
+
+h3 {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink);
+  margin: 2.25rem 0 0.875rem;
+}
+
+p { margin-bottom: 1.125rem; }
+em { font-style: italic; }
+strong { font-weight: 600; }
+
+/* ── MATH BLOCKS ── */
+.math-block {
+  background: var(--cream3);
+  border-left: 0.125rem solid var(--ink-dim);
+  padding: 1.125rem 1.5rem;
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  font-size: 0.9375rem;
+}
+.math-label {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .15em;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.625rem;
+}
+
+/* ── TABLES ── */
+.tbl-wrap { overflow-x: auto; margin: 1.5rem 0; }
+table { width: 100%; border-collapse: collapse; font-size: 0.90625rem; font-family: var(--mono); }
+th {
+  background: var(--cream2);
+  color: var(--ink-mid);
+  font-weight: 400;
+  letter-spacing: .07em;
+  padding: 0.6875rem 1rem;
+  text-align: left;
+  border-bottom: 0.0625rem solid var(--rule);
+  white-space: nowrap;
+}
+td {
+  padding: 0.625rem 1rem;
+  border-bottom: 0.0625rem solid rgba(26,23,19,.07);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(26,23,19,.03); }
+
+.pass { color: var(--green); }
+.fail { color: var(--ink-dim); }
+.open { color: var(--blue); }
+.hi   { color: var(--green); }
+.lo   { color: var(--rust); }
+.mid  { color: var(--ink-dim); }
+
+/* ── CALLOUTS ── */
+.callout {
+  background: var(--cream3);
+  border: 0.0625rem solid var(--rule);
+  border-left: 0.1875rem solid var(--ink-mid);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.callout.claim { border-left-color: var(--green); }
+.callout.warn  { border-left-color: var(--rust); }
+
+.callout-label {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.625rem;
+}
+.callout.claim .callout-label { color: var(--green); }
+.callout.warn  .callout-label { color: var(--rust); }
+
+/* ── CODE ── */
+code {
+  font-family: var(--mono);
+  font-size: .8em;
+  background: var(--cream2);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.125rem;
+  color: var(--ink-mid);
+}
+pre {
+  background: var(--cream2);
+  border: 0.0625rem solid var(--rule);
+  padding: 1.25rem 1.375rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  line-height: 1.75;
+  margin: 1.25rem 0;
+  color: var(--ink);
+}
+
+/* ── MISC ── */
+.note {
+  font-size: 0.9375rem;
+  color: var(--ink-dim);
+  font-style: italic;
+  margin-bottom: 1rem;
+  line-height: 1.65;
+}
+hr { border: none; border-top: 0.0625rem solid var(--rule); margin: 3.5rem 0; }
+
+ol.body-list { padding-left: 1.5rem; margin: 1rem 0; line-height: 2.4; }
+ol.body-list li { margin-bottom: 0.25rem; }
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 6rem;
+  padding-top: 1.5rem;
+  border-top: 0.0625rem solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  line-height: 2.4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.5rem;
+}
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── MOBILE FIXES ── */
+mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+@media (max-width: 30rem) {
+  body { font-size: 1.125rem; }
+
+  h1 {
+    font-size: clamp(1.5rem, 6.5vw, 2.125rem);
+    line-height: 1.18;
+    font-weight: 600;
+  }
+
+  .doc-header { margin-bottom: 2.5rem; }
+  h1 .br-mobile { display: none; }
+  .subtitle { font-size: 1rem; }
+
+  section { margin-bottom: 3rem; }
+  h3 { font-size: 1.0625rem; margin: 1.5rem 0 0.625rem; }
+
+  .toc { padding: 1.125rem 0; margin-bottom: 3rem; }
+  .toc ol { line-height: 2.0; }
+  .toc a { font-size: 1.03125rem; }
+
+  .math-block { padding: 0.75rem 0.875rem; font-size: 0.9375rem; }
+
+  .callout { padding: 0.875rem 1rem; font-size: 1.09375rem; }
+
+  pre { font-size: 0.6875rem; padding: 0.875rem 0.875rem; }
+
+  .tbl-wrap { -webkit-overflow-scrolling: touch; }
+  td, th { padding: 0.5625rem 0.625rem; font-size: 0.8125rem; }
+
+  ol.body-list { line-height: 2.0; }
+
+  .nav-card { padding: 1rem 1.125rem 1.25rem; }
+
+  p { margin-bottom: 0.875rem; }
+
+  hr { margin: 2.25rem 0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- トップナビ -->
+<nav class="top-nav">
+  <a href="../index.html">← ホーム</a>
+</nav>
+
+<!-- ヘッダー -->
+<header class="doc-header">
+  <div class="doc-tag">theory.html · 改訂論文 · ステージ1〜2dの結果を反映</div>
+  <h1>内的帰属崩壊：<span class="br-mobile"><br></span>適応システムにおける<span class="br-mobile"><br></span>方策幾何学依存の証拠と<span class="br-mobile"><br></span>構造的誤帰属</h1>
+  <div class="subtitle">theory.htmlにおける崩壊定義を更新した改訂実証論文。中核命題（PE ⊥ 帰属分離可能性）は保持し、外部残差識別不可能性の主張を撤回・置換する。</div>
+  <div class="meta">
+    複数AIピアレビューリレー：Claude · Codex · ChatGPT · Gemini · Perplexity<br>
+    依拠：<a href="theory.html">theory.html</a> · 実験チェーン ステージ1〜2d<br>
+    状態：ドラフト · ステージ2e 未解 · ベースライン実験 未実施
+  </div>
+</header>
+
+<!-- ナビカード -->
+<div class="nav-cards">
+  <a class="nav-card" href="index.html">
+    <div class="nav-card-num">01 / 概要</div>
+    <div class="nav-card-title">このアーカイブについて</div>
+    <div class="nav-card-file">index.html</div>
+  </a>
+  <a class="nav-card active" href="theory.html">
+    <div class="nav-card-num">02 / 理論</div>
+    <div class="nav-card-title">理論（SRA / MOAT v5g）</div>
+    <div class="nav-card-file">theory.html</div>
+  </a>
+  <a class="nav-card" href="appendix.html">
+    <div class="nav-card-num">03 / 補遺</div>
+    <div class="nav-card-title">コード・ログ・補足資料</div>
+    <div class="nav-card-file">appendix.html</div>
+  </a>
+</div>
+
+<!-- 目次 -->
+<nav class="toc">
+  <div class="toc-title">目次</div>
+  <ol>
+    <li><a href="#s1">アブストラクト</a></li>
+    <li><a href="#s2">theory.htmlからの変更点</a></li>
+    <li><a href="#s3">核心的区別：外部 vs 内部</a></li>
+    <li><a href="#s4">SRAフレームワーク（要約）</a></li>
+    <li><a href="#s5">MOAT v5gベンチマーク</a></li>
+    <li><a href="#s6">実験結果：ステージ1〜2d</a></li>
+    <li><a href="#s7">主張の階層</a></li>
+    <li><a href="#s8">ABHTとの関係</a></li>
+    <li><a href="#s9">限界と留意点</a></li>
+    <li><a href="#s10">結論</a></li>
+  </ol>
+</nav>
+
+<!-- §1 -->
+<section id="s1">
+<h2>§1 · アブストラクト</h2>
+<p>本論文では<em>内的帰属崩壊</em>を定義し、実証的に検討する。これは、非定常な部分観測可能性下の適応システムが、残差を誤った潜在チャネルに構造的に誤帰属させ、識別方向を避ける方策を生成し、見かけ上の残差証拠を方策幾何学依存にしてしまう障害モードである。中心的な知見は次の解離である：</p>
+<div class="callout claim">
+  <div class="callout-label">中心的知見</div>
+  外部分類器の識別可能性とエージェント内部の帰属正確性は独立である。システムは、内部信念構造が真の構造的原因について系統的に誤っている状態でも、外部から分類可能な残差軌跡を生成できる。
+</div>
+<p>theory.htmlの元の主張——誤帰属が外部軌跡レベルの識別可能性を再帰的に劣化させる——は実験では確認されなかった。確認されたことは、別の意味でより強力だ：見かけ上の残差分離可能性は方策誘発の軌跡幾何学によって<em>構築</em>されており、一方でエージェントの内部帰属マップは誤った構造方向を指し示している。</p>
+<p>本論文ではMOAT v5gをこの障害モードのストレステストベンチマークとして提示し、指向性崩壊をその操作的シグネチャとして形式化する。また、実験的に支持された誤帰属連鎖（誤った更新 → 内因性指向性枯渇 → 方策幾何学依存の証拠 → 内部帰属失敗）を示す構成的最小エージェント（SRAAgent）を提供する。</p>
+</section>
+
+<!-- §2 -->
+<section id="s2">
+<h2>§2 · theory.htmlからの変更点</h2>
+<p>theory.htmlは帰属崩壊を、再帰的汚染による<em>外部</em>残差識別不可能性の生成として定式化していた：</p>
+<div class="callout warn">
+  <div class="callout-label">撤回された主張（theory.htmlアブストラクト）</div>
+  誤った潜在チャネルへの更新が方策を歪める。歪んだ方策が将来の軌跡証拠を汚染する。そして軌跡レベルの識別可能性が再帰的に劣化する（再帰的帰属汚染）。
+</div>
+<p>実験は、適応残差AUCが崩壊しないことを示している——高いまま（0.762）だ。実験チェーンが明らかにしたのは、その高いAUCの分解である：</p>
+<ol class="body-list">
+  <li><strong>ステージ2c：</strong>方策マッチドリプレイでAUCが 0.762 → 0.553 に低下。高いAUCは方策幾何学依存だった。</li>
+  <li><strong>ステージ2b：</strong>帰属角：H<sub>Q</sub>エピソードの88.8%で $\angle(\hat{v}, v_Q) &lt; \angle(\hat{v}, v_B)$。エージェントは内部で誤帰属している。</li>
+  <li><strong>ステージ2d：</strong>指向性AUC表：AUCは行動方向の関数（$v_B$整合 &gt; $v_Q$整合）。</li>
+</ol>
+<p>帰属崩壊の改訂定義：</p>
+<div class="callout claim">
+  <div class="callout-label">改訂定義</div>
+  外部証拠は分類可能なまま残るが、適応エージェントはそれを誤った構造更新チャネルにマッピングし、B識別方向を避ける方策を生成し、見かけ上の残差分離可能性を方策幾何学依存にする。
+</div>
+<p><strong>theory.htmlから引き継がれたもの：</strong>PE ⊥ 帰属分離可能性命題（§3.3）、指向性崩壊メトリクス、MOAT v5g測定アーキテクチャ（D_probe / D_oracle / D_policy分離）、隠れ交絡因子分析（§6）、および誠実な限界についての節。汚染ヤコビアン分析（$\rho(J) &gt; 1$）はメカニズムのスケッチとして引き継がれるが、構成的数値実証は依然として欠けている。</p>
+</section>
+
+<!-- §3 -->
+<section id="s3">
+<h2>§3 · 核心的区別：外部 vs 内部</h2>
+<h3>3.1 二つの独立した量</h3>
+<p>$\mathcal{H} = \{H_B, H_Q\}$ を競合する構造的仮説（Bドリフト vs Qバースト）とする。次を定義する：</p>
+<div class="math-block">
+  <div class="math-label">外部識別可能性</div>
+  $$D_\text{ext}(\pi_t) \;=\; \mathrm{AUC}\!\bigl(\text{classifier on } \{e_{t:t+k}\} \text{ generated under policy } \pi_t\bigr)$$
+</div>
+<div class="math-block">
+  <div class="math-label">エージェント内部の帰属正確性</div>
+  $$\mathrm{AC}_t \;=\; \mathbf{1}\!\bigl[\angle(\hat{v}_t,\, v_B) < \angle(\hat{v}_t,\, v_Q)\bigr], \quad \hat{v}_t = \mathrm{left\_svec}(\hat{B}_t - I)$$
+</div>
+<p>実証結果：H<sub>Q</sub> + SRAAgentのもとで、$D_\text{ext} = 0.762$ である一方、88.8%のエピソードで $\mathrm{AC}_t = 0$。</p>
+<h3>3.2 ギャップが生じる理由</h3>
+<p>H<sub>Q</sub> SRAAgentとH<sub>B</sub> SRAAgentはそれぞれ異なる行動方向（$v_Q$ と $v_B$）に向けて適応する。それぞれの乖離した方策が構造的に異なる残差軌跡を生成し、外部分類器はそれを読み取ることができる。しかし、H<sub>Q</sub>エージェント自身はこれを知らない——学習済みBドリフト方向として $v_Q$ を吸収してしまっているのだ。</p>
+<p>外部分類器の成功は、2つの誤帰属方策の乖離がもたらす<em>法科学的痕跡</em>であり、いかなるエージェントが原因を正しく帰属させたことを示すものではない。方策の乖離を除去すると（方策マッチドリプレイ）、AUCは0.553まで低下し、設計上の単一ステップ識別不可能性領域に近づく。</p>
+<h3>3.3 工学的意義</h3>
+<p>この解離が重要な理由は、標準的な適応システム評価が外部性能指標から内部帰属品質を推定するからだ。$D_\text{ext}$ が高ければ、システムは「環境を正しく読み取っている」と判断される。SRAAgentの結果は、方策が適応されたとき、この推定が失敗することを示している——外部観察者はエージェント自身が決して行わない比較から恩恵を受けているのである。</p>
+</section>
+
+<!-- §4 -->
+<section id="s4">
+<h2>§4 · SRAフレームワーク（要約）</h2>
+<h3>4.1 残差の因数分解</h3>
+<div class="math-block">
+$$e_t \;=\; \underbrace{(B_\text{true} - \hat{B}_t)u_t}_{B\text{ドリフト}} \;+\; \underbrace{\Delta Q_t}_{Q\text{バースト}} \;+\; \underbrace{(A_\text{true}-\hat{A}_t)x_t}_{A\text{ドリフト}} \;+\; \underbrace{w_t + \eta_t}_{\text{ノイズ}}$$
+</div>
+<h3>4.2 帰属分離可能性</h3>
+<div class="math-block">
+$$\theta(\mathcal{S}_B, \mathcal{S}_Q) \;=\; \arccos\!\left(\sigma_{\max}\bigl(\hat{S}_B^\top \hat{S}_Q\bigr)\right)$$
+</div>
+<p>帰属分離可能性は、現在の方策のもとで各原因の残差部分空間が幾何学的にどの程度識別可能かを測る。この角度は理論的枠組みを提供し、MOAT v5gの操作的診断はPEとエネルギーを保持したもとでの $\mathrm{DE}_B$ 枯渇であり、内部誤帰属は帰属角診断（§6.3）で確認する。</p>
+<h3>4.3 中核命題（PE ⊥ 帰属分離可能性）</h3>
+<div class="callout claim">
+  <div class="callout-label">支持可能な中核命題</div>
+  $$\exists\, \pi,\, t \;:\; \mathrm{PE}(\pi_t) \geq \varepsilon_\text{PE} \;\wedge\; \theta(\mathcal{S}_B(\pi_t), \mathcal{S}_Q(\pi_t)) < \varepsilon_\theta$$
+  持続的励起はパラメータ識別可能性を助けるが、競合する構造的仮説間の帰属分離可能性を保証しない。この2つの条件は独立である。
+</div>
+<h3>4.4 指向性崩壊（操作的定義）</h3>
+<div class="math-block">
+  <div class="math-label">指向性エネルギー — B方向</div>
+  $$\mathrm{DE}_B(t) \;=\; \frac{v_B^\top \mathbb{E}[u_t u_t^\top]\, v_B}{\mathrm{tr}\,\mathbb{E}[u_t u_t^\top]}$$
+</div>
+<p>$\lambda_{\min}(\mathbb{E}[u_t u_t^\top]) \geq \varepsilon_\text{PE}$ かつ $\mathrm{tr}\,\mathbb{E}[u_t u_t^\top] \geq \varepsilon_E$ を保ちながら $\mathrm{DE}_B \downarrow$ が観測されたとき、指向性崩壊と宣言する。これにより指向性枯渇をPE崩壊やエネルギー不足と区別する。</p>
+<h3>4.5 識別可能性の仮定</h3>
+<p>SRAが因果帰属の代理として機能するのは、Spec-1（プロセスノイズが行動と独立）、Spec-2（観測ノイズが行動と独立）、Spec-3（隠れ交絡因子なし）、Spec-4（PE条件）、Spec-5（$B_\text{true}$ の準定常性）のもとのみである。Spec-3違反はtheory.html §6で形式的に分析されており、$B_\text{true}$ が一定でも偽のBチャネル更新を生じさせる。</p>
+</section>
+
+<!-- §5 -->
+<section id="s5">
+<h2>§5 · MOAT v5gベンチマーク</h2>
+<h3>5.1 システム</h3>
+<div class="math-block">
+$$x_{t+1} = Ax_t + B_\text{true}u_t + w_t, \quad x_t, u_t \in \mathbb{R}^2$$
+$$H_B:\; B_\text{true} = I + \delta_B v_B v_B^\top \qquad\qquad H_Q:\; Q_t = \sigma_w^2 I + \delta_Q\,\mathbf{1}_\text{burst}(t)\,v_Q v_Q^\top$$
+$$v_B \sim \mathrm{Uniform}(S^1), \quad v_Q = R(\theta)v_B, \quad \theta \sim \mathrm{Uniform}(30°,150°)$$
+$$\delta_B^2 \cdot \mathbb{E}[\|u_t\|^2] = \delta_Q \quad \text{（単一ステップ識別不可能性）}$$
+</div>
+<h3>5.2 測定アーキテクチャ（2レベル）</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th>メトリクス</th><th>レベル</th><th>目的</th></tr></thead>
+<tbody>
+<tr><td><code>D_probe(t)</code></td><td>診断</td><td>固定等方プローブ下のAUC — 環境識別可能性チェック</td></tr>
+<tr><td><code>D_oracle(t)</code></td><td>診断</td><td>正しい信念方策下のAUC — 反事実診断</td></tr>
+<tr><td><code>DE_B(t)</code></td><td>診断</td><td>指向性エネルギー：$v_B^\top\mathbb{E}[uu^\top]v_B / \mathrm{tr}$</td></tr>
+<tr><td><code>帰属角</code></td><td>診断</td><td>$\angle(\hat{v},v_B)$ vs $\angle(\hat{v},v_Q)$ — 内部誤帰属の証拠</td></tr>
+<tr><td><code>AUC_residual(t)</code></td><td>性能</td><td>$e_{t+3:t+3+k}$ 上の分類器 — 真の幾何学を参照しない</td></tr>
+<tr><td><code>AUC_action(t)</code></td><td>漏洩チェック</td><td>$u_{t:t+k}$ 上の分類器 — 偶然に近いはずの値</td></tr>
+</tbody></table></div>
+<h3>5.3 SRAAgent（構成的最小反例）</h3>
+<pre><span style="color:var(--blue)">更新則：</span>  B_est += lr * outer(e_t, u_t) / ‖u_t‖²
+<span style="color:var(--blue)">方策：</span>    v_est = left_singular_vector(B_est − I)
+           cov_u = E·(1−δ)·v_est⊗v_est + E·δ·v_est⊥⊗v_est⊥
+
+<span style="color:var(--blue)">H_Bのもとで：</span> e_t ≈ B_drift along v_B
+           → B_est−I accumulates v_B⊗v_B component
+           → policy concentrates along v_B (correct feedback)
+
+<span style="color:var(--blue)">H_Qのもとで：</span> e_t ≈ burst_noise along v_Q
+           → B_est−I accumulates v_Q⊗v_Q component
+           → policy concentrates along v_Q (positive feedback)</pre>
+<p class="note">SRAAgentは一般的な適応エージェントについての主張ではなく、構成的最小反例である。関連条件は、Qバーストモデルを持たないBチャネル単体のLS更新である。</p>
+<h3>5.4 崩壊検出基準</h3>
+<p class="note">C1〜C5はステージ1〜2dで確立されている。C6（<code>AUC_residual &lt; 0.60</code>）はステージ2eの目標であり、内因性適応ループ内部での残差AUC崩壊はいまだ実証されておらず、未解決のままである。</p>
+<pre>C1  D_probe AUC          > 0.75   環境が識別可能                    ✓ ステージ1
+C2  D_oracle AUC         > 0.75   正しい信念は識別可能性を保持       ✓ ステージ1
+C3  PE_policy            ≥ ε_PE   十分な入力ランク                  ✓ ステージ2a
+C4  InputEnergy          ≥ ε_E    十分な入力エネルギー              ✓ ステージ2a
+C5  DE_B                 ↓        指向性枯渇                       ✓ ステージ2a
+    帰属角               H_Q下でエラー率 ≥ 0.55                   ✓ ステージ2b
+    AUC_action           ≈ 偶然   漏洩チェック                     ✓ ステージ2c
+─── ステージ2e目標（未解決）────────────────────────────────────────────────
+C6  AUC_residual         < 0.60   適応ループ内の残差崩壊               未解決</pre>
+</section>
+
+<!-- §6 -->
+<section id="s6">
+<h2>§6 · 実験結果：ステージ1〜2d</h2>
+<p class="note">パラメータ：$n=600$ エピソード、$T=60$ ステップ、$\delta_B=0.9$、$\sigma_w=0.25$、入力エネルギー $=2.0$、lr $=0.15$、$\theta\in[30°,150°]$。分類器：線形SVM + RFF-SVM。AUC $= \max(\text{auc},1-\text{auc})$。</p>
+
+<h3>6.1 ステージ1 — 外部幾何学的検証</h3>
+<p>外部から制御した <code>wrong_strength</code> がPEと総エネルギーを固定したまま $\mathrm{DE}_B$ を低下させる。結果：<code>AUC_residual</code> が0.60未満に崩壊。PEやエネルギー崩壊と独立な指向性枯渇単体で、軌跡レベルの残差識別可能性を破壊するのに十分である。</p>
+
+<h3>6.2 ステージ2a — 内因性指向性枯渇</h3>
+<p><code>wrong_strength</code> を除去。SRAAgentは $\hat{B}_0 = I$ から実行する。</p>
+<div class="tbl-wrap"><table>
+<thead><tr><th>メトリクス</th><th>H_B</th><th>H_Q</th><th>ステータス</th></tr></thead>
+<tbody>
+<tr><td>DE_B（後期、t=38〜55）</td><td class="hi">0.826 ↑</td><td class="lo">0.406 ↓</td><td class="pass">コントラスト 0.420 ✓</td></tr>
+<tr><td>PE（H_Q後期）</td><td>—</td><td>0.300</td><td class="pass">≥ 0.15 ✓</td></tr>
+<tr><td>入力エネルギー（H_Q後期）</td><td>—</td><td>2.000</td><td class="pass">≥ 1.0 ✓</td></tr>
+<tr><td>DE_B（t=0時点）</td><td>0.500</td><td>0.500</td><td class="pass">ともに等方 ✓</td></tr>
+</tbody></table></div>
+<p>汚染はt=2〜3で完了し、安定する。ループ $e_t \to \hat{B}_t \to u_t \to e_{t+1}$ はH<sub>Q</sub>のもとで自己強化的である。</p>
+
+<h3>6.3 ステージ2b — 帰属角（主要内部証拠）</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th>条件</th><th>割合</th><th>$\angle(\hat{v},v_B)$ 平均</th><th>$\angle(\hat{v},v_Q)$ 平均</th></tr></thead>
+<tbody>
+<tr><td>H_B（正解）</td><td class="hi">0.983</td><td class="hi">6.9°</td><td class="lo">58.3°</td></tr>
+<tr><td>H_Q（誤帰属）</td><td class="lo">0.888</td><td class="lo">55.2°</td><td class="hi">15.3°</td></tr>
+</tbody></table></div>
+<p>H<sub>Q</sub>エピソードの88.8%で、エージェントの推定ドリフト方向は $v_B$ より $v_Q$ に近い。エージェントはQバースト証拠をBチャネルのドリフトとして構造的に吸収してしまっている。</p>
+
+<h3>6.4 ステージ2c — 方策マッチドリプレイ</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th>方策ソース</th><th>AUC</th><th>解釈</th></tr></thead>
+<tbody>
+<tr><td>SRA適応型（独自方策）</td><td class="hi">0.762</td><td>乖離した方策が読み取り可能な残差を生成する</td></tr>
+<tr><td>行動のみ（漏洩チェック）</td><td class="mid">0.550</td><td>偶然に近い；行動ラベルの漏洩なし</td></tr>
+<tr><td>リプレイ：H_Q行動 → 両環境</td><td class="lo">0.553</td><td>等しい行動のもと：ほぼ識別不能</td></tr>
+<tr><td><strong>AUC低下量</strong></td><td style="color:var(--blue)"><strong>0.209</strong></td><td>方策幾何学がAUCの源泉だった</td></tr>
+</tbody></table></div>
+
+<h3>6.5 ステージ2d — 多方向リプレイ表</h3>
+<div class="tbl-wrap"><table>
+<thead><tr><th>行動ソース</th><th>AUC</th><th>線形</th><th>RFF</th></tr></thead>
+<tbody>
+<tr><td>SRA適応型</td><td class="hi">0.761</td><td>0.524</td><td>0.998</td></tr>
+<tr><td>行動のみ（漏洩）</td><td class="mid">0.550</td><td>0.543</td><td>0.556</td></tr>
+<tr><td>リプレイ：H_B行動</td><td class="hi">0.639</td><td>0.533</td><td>0.745</td></tr>
+<tr><td>リプレイ：H_Q行動</td><td class="lo">0.537</td><td>0.530</td><td>0.544</td></tr>
+<tr><td>リプレイ：$v_B$ 方策</td><td class="hi">0.650</td><td>0.506</td><td>0.794</td></tr>
+<tr><td>リプレイ：$v_Q$ 方策</td><td class="mid">0.598</td><td>0.586</td><td>0.609</td></tr>
+<tr><td>リプレイ：等方</td><td class="lo">0.518</td><td>0.511</td><td>0.525</td></tr>
+<tr><td>リプレイ：$v_B$-オラクル（≡ $v_B$）</td><td class="hi">0.640</td><td>0.503</td><td>0.777</td></tr>
+</tbody></table></div>
+<p>パターン：$v_B$整合 $\approx$ H<sub>B</sub>行動 $>$ $v_Q$整合 $>$ H<sub>Q</sub>行動 $\approx$ 等方。AUCは行動方向の関数である。注：$v_Q > \text{等方}$ は予測通り（$v_Q$ はQバースト分散を励起する）。主張は $v_B > v_Q$ であり、$v_Q &lt; \text{等方}$ ではない。</p>
+<p>帰属マージン（代理指標：$\|\hat{B}-I\|_F / \bar{e}^2$）：H<sub>B</sub> = 3.274、H<sub>Q</sub> = 0.506。両エージェントともBチャネルにシグナルを吸収するが、H<sub>Q</sub>の吸収は偽であり $v_Q$ に沿って向けられている。</p>
+</section>
+
+<!-- §7 -->
+<section id="s7">
+<h2>§7 · 主張の階層</h2>
+<div class="tbl-wrap"><table>
+<thead><tr><th>主張</th><th>ステータス</th></tr></thead>
+<tbody>
+<tr><td>PEと帰属分離可能性は独立した条件である</td><td class="pass">✓ 支持可能</td></tr>
+<tr><td>SRAAgentは <code>wrong_strength</code> なしで内因性 $\mathrm{DE}_B$ 枯渇を生成する</td><td class="pass">✓ ステージ2a</td></tr>
+<tr><td>H<sub>Q</sub>エピソードの88.8%で $\hat{v} \approx v_Q$（内部誤帰属）</td><td class="pass">✓ ステージ2b</td></tr>
+<tr><td>方策マッチドリプレイで適応AUCが 0.762 → 0.553 に低下</td><td class="pass">✓ ステージ2c</td></tr>
+<tr><td>リプレイ表でAUCが指向性に依存：$v_B > v_Q$</td><td class="pass">✓ ステージ2d</td></tr>
+<tr><td>$D_\text{ext} \neq \mathrm{AC}$：外部識別可能性 ≠ 内部帰属</td><td class="pass">✓ 実験的に支持</td></tr>
+<tr><td>同一適応ループ内部での残差AUC崩壊（ステージ2e）</td><td class="open">未解決 / 任意</td></tr>
+<tr><td>SRAはABHTと異なる新理論である</td><td class="fail">未達成 — 障害モードベンチマーク必要</td></tr>
+<tr><td>Spec-3（隠れ交絡因子）下での一般的な因果同定</td><td class="fail">未到達</td></tr>
+<tr><td>高PEが崩壊を加速する（高PE逆説）</td><td class="fail">撤回</td></tr>
+</tbody></table></div>
+</section>
+
+<!-- §8 -->
+<section id="s8">
+<h2>§8 · ABHTとの関係</h2>
+<p>能動的ベイズ仮説検定（ABHT）は識別可能性 $D(P(r \mid H_B,\pi) \| P(r \mid H_Q,\pi))$ を最大化する行動を選択する。解決する問いは：<em>どの行動が識別可能性を高めるか？</em></p>
+<p>SRA/MOATが解決する問いは：<em>構造的帰属の誤りが、どのようにしてエージェントを識別可能性を高める方向から遠ざけるか？</em> 両者は補完的である。ABHTは最適方策を規定し、SRA/MOATはエージェントが正しい構造的仮説を持たない場合の障害モードを特徴付ける。</p>
+<div class="callout">
+  <div class="callout-label">安全な差別化の主張</div>
+  MOAT v5gはABHTと独立した理論として立っているわけではない。本研究が提示するのは閉ループ障害モードである——誤った構造的帰属が方策をB識別方向から遠ざけ、評価者が利用する見かけの識別可能性を方策幾何学依存にする——を、ABHTベースラインと直接比較可能な反証可能なベンチマークとして提示する。ABHTファミリーのエージェントがステージ2e実験で指向性崩壊を回避するなら、これは価値ある否定的結果である：ABHT流の能動的センシングはすでにこの病理をカバーしていることになる。
+</div>
+<p>ベースライン実験の的を絞った問い：見かけの残差分離可能性が方策幾何学依存で帰属角が $v_Q$ に向けて劣化しているとき、ABHTスタイルのエージェントは内部構造的誤帰属を回避できるか？</p>
+</section>
+
+<!-- §9 -->
+<section id="s9">
+<h2>§9 · 限界と留意点</h2>
+<p><strong>SRAAgentは構成的最小反例である。</strong>方策集中ルールはこの障害を示すよう設計されている。主張は、この障害モードが内因的に<em>起こり得る</em>ということであり、すべての適応エージェントやすべての更新則のもとで起こるということではない。</p>
+<p><strong>行動のみAUC = 0.550 は漏洩閾値に近い。</strong>残差方策シグネチャ漏洩を排除するには、複数シードの信頼区間が必要である。偶然に近い値として報告するが、ゼロとしては報告しない。</p>
+<p><strong>汚染ヤコビアンには構成的証明がない。</strong>線形化汚染システムの条件 $\rho(J(\delta_t)) > 1$ は、2次元反例で数値的に実証されていない。これは解析的なスケッチに留まっている。</p>
+<p><strong>Spec-3違反（隠れ交絡因子）はSRAを破壊する。</strong>隠れ交絡因子 $c_t$ が $\mathbb{E}[e_t u_t^\top \mid c_t] \neq 0$ を満たす場合、$B_\text{true}$ が一定でも $\hat{B}$ が更新される。SRAはSpec-1〜5のもとでのみ因果帰属の代理として機能する。MOAT v5gのフェーズ5はこの限界を明示的にテストする。</p>
+<p><strong>ステージ2eは未解決である。</strong>同一適応ループ内部での残差AUC崩壊は実証されていない。リプレイAUC = 0.553は閾値0.60に近いが、確認とは見なせない。</p>
+</section>
+
+<!-- §10 -->
+<section id="s10">
+<h2>§10 · 結論</h2>
+<p>実験チェーン ステージ1〜2d は5つの結果を確立する：</p>
+<ol class="body-list">
+  <li>PEやエネルギー崩壊と独立な指向性エネルギー枯渇が、軌跡レベルの残差識別可能性を破壊する（ステージ1）。</li>
+  <li>最小の適応エージェントが、外部注入なしに構造的誤帰属を通じてこの枯渇を内因的に生成する（ステージ2a）。</li>
+  <li>エージェントの内部帰属マップは失敗する：推定ドリフト方向が敵対的エピソードの88.8%でQバースト方向と一致する（ステージ2b）。</li>
+  <li>見かけの高い残差AUC（0.762）は方策幾何学依存である：方策マッチドリプレイで0.553に低下し、行動のみAUCは偶然に近いまま（ステージ2c）。</li>
+  <li>AUCは行動方向の関数であり、$v_B$整合行動は $v_Q$整合またはH<sub>Q</sub>生成行動より高い分離可能性をもたらす（ステージ2d）。</li>
+</ol>
+<p>中心的な貢献は、<em>外部分類器の識別可能性とエージェント内部の帰属正確性が独立である</em>という実証的実証である。標準的な適応システム評価は外部性能指標から内部帰属品質を推定するが、SRAAgentの結果は、方策が構造的誤帰属のもとで適応されたときこの推定が失敗することを示している。</p>
+<p>SRA/MOATは外部識別不可能性の理論としてではなく、外部証拠品質と内部帰属忠実性の解離のベンチマークとして位置付けられる——この解離はABHTと古典的閉ループ同定が直接対象としておらず、MOAT v5gはその境界をマッピングするよう設計されている。</p>
+<hr>
+<p class="note">ステージ2e（適応ループ内部での残差AUC崩壊）は未解決のままである。ステージ2eが成功すれば、再帰的汚染の完全な主張が確立される。ステージ2eが失敗しても、否定的結果はABHTファミリーの方策がこの幾何学をカバーしていることを確認し——いずれにせよ価値あるベンチマーク知見となる。</p>
+</section>
+
+<footer>
+  <a href="../index.html">ホーム →</a>
+  <a href="index.html">概要 →</a>
+  <a href="theory.html">理論 →</a>
+  <a href="appendix.html">補遺 →</a>
+  <a href="../sra/theory.html">SRA →</a>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>理論はいかに進化したか — index.html</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+SC:wght@400;600&family=Fira+Code:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:   #e9e4d9;
+  --cream2:  #ddd8cd;
+  --cream3:  #f2ede4;
+  --ink:     #1a1713;
+  --ink-mid: #4a453e;
+  --ink-dim: #7a746c;
+  --blue:    #3d6178;
+  --blue2:   #5a8aa8;
+  --blue-lt: #dde7ef;
+  --rust:    #8a4030;
+  --rust-lt: #f0e0dc;
+  --green:   #3a6448;
+  --green-lt:#ddeee4;
+  --amber:   #8a6030;
+  --amber-lt:#ede0cc;
+  --rule:    rgba(26,23,19,.14);
+  --mono:    'Fira Code','Courier New',monospace;
+  --serif:   'EB Garamond','Georgia',serif;
+  --display: 'Cormorant Garamond','Georgia',serif;
+  --sc:      'Cormorant SC','Cormorant Garamond',serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.82;
+  font-weight: 400;
+}
+
+.page { max-width: 51.25rem; margin: 0 auto; padding: 0 3rem 7.5rem; }
+@media (max-width: 41.25rem) { .page { padding: 0 1.375rem 5rem; } }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2rem 0 0;
+  margin-bottom: 4rem;
+}
+.top-nav a {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+.top-nav a:hover { color: var(--ink); }
+
+/* ── MASTHEAD ── */
+.masthead {
+  margin-bottom: 4rem;
+}
+
+.masthead-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+}
+
+.masthead h1 {
+  font-family: var(--display);
+  font-size: clamp(2.125rem, 5.2vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.masthead h1 em {
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 300;
+}
+
+.masthead-sub {
+  font-family: var(--display);
+  font-size: 1.275rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-dim);
+  max-width: 36.25rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.nav-bar {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .1em;
+  padding-top: 1.25rem;
+  border-top: 0.0625rem solid var(--rule);
+}
+.nav-bar a { color: var(--blue); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
+
+/* ── NAV CARDS ── */
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 0.0625rem solid var(--rule);
+  margin-bottom: 4.5rem;
+}
+@media (max-width: 36.25rem) { .nav-cards { grid-template-columns: 1fr; } }
+
+.nav-card {
+  padding: 1.375rem 1.5rem 1.625rem;
+  border-right: 0.0625rem solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s;
+}
+.nav-card:last-child { border-right: none; }
+.nav-card:hover { background: var(--cream2); }
+.nav-card.active { background: var(--ink); color: var(--cream); }
+
+.nav-card-num {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+.nav-card.active .nav-card-num { color: rgba(233,228,217,.45); }
+
+.nav-card-title {
+  font-family: var(--sc);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.3;
+  margin-bottom: 0.4375rem;
+}
+
+.nav-card-file {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  color: var(--ink-dim);
+}
+.nav-card.active .nav-card-file { color: rgba(233,228,217,.45); }
+
+/* ── INTRO ── */
+.intro {
+  max-width: 40rem;
+  margin-bottom: 4.5rem;
+  font-size: 1.275rem;
+  line-height: 1.88;
+  color: var(--ink-mid);
+}
+.intro strong { color: var(--ink); font-weight: 600; }
+.intro p { margin-bottom: 1rem; }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 0; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1.5rem;
+  top: 0; bottom: 0;
+  width: 0.0625rem;
+  background: var(--rule);
+}
+
+.phase { position: relative; padding-left: 4.25rem; margin-bottom: 4.25rem; }
+
+.phase-dot {
+  position: absolute;
+  left: 1rem; top: 0.5625rem;
+  width: 1rem; height: 1rem;
+  border-radius: 50%;
+  border: 0.125rem solid var(--ink-dim);
+  background: var(--cream);
+}
+.phase.current .phase-dot { background: var(--ink); border-color: var(--ink); }
+.phase.pruned  .phase-dot { border-color: var(--rule); background: var(--cream2); }
+
+.phase-meta {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.625rem;
+}
+.phase-meta span {
+  color: var(--blue);
+  margin-right: 0.5rem;
+}
+.phase.pruned .phase-meta span { color: var(--ink-dim); }
+
+.phase h2 {
+  font-family: var(--display);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.875rem;
+  line-height: 1.25;
+}
+.phase.pruned h2 {
+  color: var(--ink-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--rule);
+}
+
+.phase p { font-size: 1.1625rem; margin-bottom: 0.75rem; }
+.phase p.dim { color: var(--ink-dim); }
+
+/* ── CHIPS ── */
+.chips { display: flex; flex-wrap: wrap; gap: 0.4375rem; margin: 1rem 0; }
+.chip {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .04em;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.125rem;
+  display: inline-block;
+}
+.chip.died     { background: var(--rust-lt);  color: var(--rust); }
+.chip.survived { background: var(--green-lt); color: var(--green); }
+.chip.born     { background: var(--blue-lt);  color: var(--blue); }
+.chip.open     { background: var(--amber-lt); color: var(--amber); }
+
+/* ── CLAIM BOXES ── */
+.claim-box {
+  background: var(--cream3);
+  border: 0.0625rem solid var(--rule);
+  border-left: 0.1875rem solid var(--ink-dim);
+  padding: 1.125rem 1.375rem;
+  margin: 1.125rem 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+.claim-box.old { border-left-color: var(--ink-dim); }
+.claim-box.new { border-left-color: var(--green); }
+
+.claim-label {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+.claim-box.new .claim-label { color: var(--green); }
+
+/* ── RESULT ROWS ── */
+.result-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 0.875rem;
+  align-items: start;
+  font-size: 1.0875rem;
+  margin: 0.625rem 0;
+}
+.icon { font-family: var(--mono); font-size: 0.8125rem; white-space: nowrap; }
+.icon.pass { color: var(--green); }
+.icon.fail { color: var(--rust); }
+.icon.open { color: var(--amber); }
+
+.stat {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  background: var(--cream2);
+  border: 0.0625rem solid var(--rule);
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.125rem;
+  white-space: nowrap;
+}
+
+/* ── DIVIDERS ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3.25rem 0;
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 0.0625rem;
+  background: var(--rule);
+}
+
+/* ── SUMMARY TABLE ── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.975rem;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+}
+.summary-table th {
+  background: var(--ink);
+  color: var(--cream);
+  font-weight: 400;
+  font-size: 0.625rem;
+  letter-spacing: .1em;
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+}
+.summary-table td {
+  padding: 0.5625rem 0.875rem;
+  border-bottom: 0.0625rem solid rgba(26,23,19,.07);
+  vertical-align: top;
+}
+.summary-table tr:nth-child(even) td { background: rgba(26,23,19,.025); }
+.p { color: var(--green); font-weight: 500; }
+.f { color: var(--rust); }
+.o { color: var(--amber); }
+
+/* ── FINAL BOX ── */
+.final-box {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 2.5rem 2.75rem;
+  margin: 3.5rem 0;
+  font-size: 1.1625rem;
+  line-height: 1.88;
+}
+.final-box h3 {
+  font-family: var(--display);
+  font-size: 1.95rem;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 1.125rem;
+  color: white;
+}
+
+/* ── CODE ── */
+code {
+  font-family: var(--mono);
+  font-size: .8em;
+  background: var(--cream2);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.125rem;
+  color: var(--ink-mid);
+}
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 5rem;
+  padding-top: 1.375rem;
+  border-top: 0.0625rem solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  line-height: 2.4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.375rem;
+}
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── MOBILE FIXES ── */
+@media (max-width: 30rem) {
+  body { font-size: 1.2rem; }
+
+  .top-nav { margin-bottom: 2.25rem; }
+
+  .masthead { margin-bottom: 2.5rem; }
+  .masthead h1 { font-size: clamp(1.625rem, 7vw, 2.125rem); }
+  .masthead-sub { font-size: 1.125rem; }
+
+  .nav-cards { margin-bottom: 3rem; }
+
+  .timeline::before { left: 0.875rem; }
+  .phase {
+    padding-left: 2.625rem;
+    margin-bottom: 3rem;
+  }
+  .phase-dot { left: 0.375rem; width: 0.875rem; height: 0.875rem; }
+
+  .summary-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  .stat { white-space: normal; word-break: break-word; }
+
+  .result-row { gap: 0.375rem 0.625rem; font-size: 1.0125rem; }
+
+  .claim-box { padding: 0.875rem 1rem; font-size: 1.05rem; }
+
+  .final-box { padding: 1.5rem 1.25rem; }
+  .final-box h3 { font-size: 1.575rem; }
+  .final-box p { font-size: 1.0875rem; }
+
+  .chip { font-size: 0.625rem; padding: 0.1875rem 0.5rem; }
+
+  .divider { font-size: 0.5625rem; gap: 0.625rem; margin: 2.25rem 0; }
+
+  .nav-bar { gap: 1rem; }
+
+  .br-desktop { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- トップナビ -->
+<nav class="top-nav">
+  <a href="../index.html">← ホーム</a>
+</nav>
+
+<!-- マストヘッド -->
+<div class="masthead">
+  <h1><em>帰属崩壊</em>が<span class="br-desktop"><br></span><em>内的帰属崩壊</em>になるまで</h1>
+  <div class="masthead-sub">複数AIによるピアレビューリレーと実験チェーン（ステージ1〜2d）を通じて、何が廃棄され、何が生き残り、何が発見されたかの記録。</div>
+  <div class="nav-bar">
+    <a href="./sra/theory.html">SRA（原版）</a>
+    <a href="theory.html">理論</a>
+    <a href="appendix.html">補遺</a>
+  </div>
+</div>
+
+<!-- ナビカード -->
+<div class="nav-cards">
+  <a class="nav-card active" href="index.html">
+    <div class="nav-card-num">01 / 概要</div>
+    <div class="nav-card-title">このアーカイブについて</div>
+    <div class="nav-card-file">index.html</div>
+  </a>
+  <a class="nav-card" href="theory.html">
+    <div class="nav-card-num">02 / 理論</div>
+    <div class="nav-card-title">理論（SRA / MOAT v5g）</div>
+    <div class="nav-card-file">theory.html</div>
+  </a>
+  <a class="nav-card" href="appendix.html">
+    <div class="nav-card-num">03 / 補遺</div>
+    <div class="nav-card-title">コード・ログ・補足資料</div>
+    <div class="nav-card-file">appendix.html</div>
+  </a>
+</div>
+
+<!-- イントロ -->
+<div class="intro">
+  <p>このドキュメントは、適応システムにおける帰属崩壊の理論が、Claude・Codex・ChatGPT・Gemini・Perplexityによる複数回のピアレビューを経て、どのように構築・破綻・再構築・精緻化されていったかを追ったものです。</p>
+  <p>洗練されたナラティブではありません。<strong>各ステージの圧力が何を取り除き、何が残ったか</strong>を正直に記録したログです。結局のところ理論とは、自分のアイデアのどの部分が荷重を支えているかを見つけ出すプロセスに他なりません。</p>
+</div>
+
+<!-- タイムライン -->
+<div class="timeline">
+
+<div class="phase pruned">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>フェーズ 0</span> 原版 &mdash; 全面削除</div>
+  <h2>観察者／自己性／意識の理論</h2>
+  <p class="dim">原文書（操作的埋め込みエージェンシー理論）は、観察者定義・F余代数的自己性不動点・フォン・ノイマン代数を介したAQFT存在論・IITとの接続を中心に据えていた。</p>
+  <div class="chips">
+    <span class="chip died">観察者（操作的定義）</span>
+    <span class="chip died">自己／自己性（F余代数的）</span>
+    <span class="chip died">意識／クオリア</span>
+    <span class="chip died">AQFT存在論</span>
+    <span class="chip died">IIT接続</span>
+    <span class="chip died">高PE逆説（初期版）</span>
+  </div>
+  <div class="claim-box old">
+    <div class="claim-label">削除理由</div>
+    これらの概念は標準的な工学・ML的な意味でのピアレビューになじまず、MOATベンチマーク枠組みの中では反証不可能である。複数AIによるレビューにより、工学的障害モードの記述に現象論的枠組みは不要であることが確認された。削除によって残った核心はより曖昧さが減り、より精確になった。
+  </div>
+</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>フェーズ 1</span> theory.html &mdash; 工学的障害定式化</div>
+  <h2>外部残差識別不可能性としての帰属崩壊</h2>
+  <p>観察者／意識の枠組みを取り除いた後に残った核心はこうだ：部分観測可能性下の適応システムは、自らの修正済み方策を通じて、将来の残差の統計的構造を歪め、自身の将来の識別可能性を再帰的に破壊し得る。</p>
+  <div class="claim-box old">
+    <div class="claim-label">theory.html &mdash; 主張の要約</div>
+    誤った潜在チャネルへの更新が方策を歪める。歪んだ方策が将来の軌跡証拠を汚染する。そして軌跡レベルの識別可能性が再帰的に劣化する（再帰的帰属汚染）。
+  </div>
+  <div class="chips">
+    <span class="chip survived">PE ⊥ 帰属分離可能性</span>
+    <span class="chip survived">指向性崩壊メトリクス</span>
+    <span class="chip survived">MOAT v5g設計</span>
+    <span class="chip survived">汚染ヤコビアン（スケッチ）</span>
+    <span class="chip survived">隠れ交絡因子分析</span>
+    <span class="chip died">高PE逆説（正式撤回）</span>
+    <span class="chip died">強い「再帰的帰属汚染」実証的主張</span>
+  </div>
+  <p class="dim">ベンチマークコード（moat_v5g.py）はこれを検証するために書かれた。コードレビューにより構造的ギャップが特定された：<code>wrong_strength</code>がエージェントによって生成されるのではなく、外部から注入されていた。ステージ1は幾何学的検証であり、閉ループの実証ではなかった。</p>
+</div>
+
+<div class="divider">最初の実験</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 1</span> 外部幾何学的検証</div>
+  <h2>ステージ1：指向性枯渇 &rarr; AUC崩壊</h2>
+  <p>外部から与えた <code>wrong_strength</code> が PE と総エネルギーを固定したまま <code>DE_B</code> を低下させる。AUC_residual は 0.60 未満に崩壊する。</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>指向性枯渇単体で、PEやエネルギーとは独立に、残差軌跡の識別可能性を破壊するのに十分である。</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>閉ループを実証しない。枯渇は外部から供給されている。</span></div>
+  <div class="chips">
+    <span class="chip born">ステージ1：幾何学的検証（用語確立）</span>
+    <span class="chip open">ステージ2：内因性ループ &mdash; 未解明</span>
+  </div>
+</div>
+
+<div class="divider">Codex / ChatGPT：「wrong_strength を排除せよ」</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 2a</span> 内因性指向性枯渇</div>
+  <h2>ステージ2a：SRAAgentが外部注入なしで枯渇を生成する</h2>
+  <p><code>wrong_strength</code> を除去。SRAAgentはBチャネルのみにLS更新を使用し、Qバーストモデルは用いない。</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span><span class="stat">DE_B H_B = 0.826</span> &nbsp; <span class="stat">DE_B H_Q = 0.406</span> &nbsp; コントラスト <span class="stat">0.420</span></span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>PE（H_Q）= 0.300 &ge; 閾値。エネルギー = 2.000。崩壊は指向性によるものであり、エネルギー的なものではない。</span></div>
+  <div class="result-row"><span class="icon open">?</span><span>AUC_residual 後期 = 0.761。崩壊していない。なぜ高いのか？</span></div>
+  <div class="chips">
+    <span class="chip born">ステージ2a 合格：内因性指向性枯渇</span>
+    <span class="chip open">AUCの謎：なぜ 0.761？</span>
+  </div>
+</div>
+
+<div class="divider">ステージ2b：エージェント内部を覗く</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 2b</span> 帰属角 &mdash; 一次内部証拠</div>
+  <h2>ステージ2b：エージェントは誤った方向を向いている</h2>
+  <p>エピソード終了時における <code>B_est &minus; I</code> の優勢方向を <code>v_B</code> および <code>v_Q</code> と比較する。</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>H_B 正解率 <span class="stat">0.983</span>。v_Bへの平均角度：<span class="stat">6.9&deg;</span>。エージェントはBドリフトを正しく学習している。</span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>H_Q 誤差率 <span class="stat">0.888</span>。v_Qへの平均角度：<span class="stat">15.3&deg;</span>。88.8%のエピソードで、エージェントの推定ドリフト方向は<em>Qバースト方向</em>に近い。</span></div>
+  <div class="chips">
+    <span class="chip born">ステージ2b 合格：エージェント内部の誤帰属</span>
+    <span class="chip born">新中核概念：外部識別可能性 &ne; 内部識別可能性</span>
+    <span class="chip open">AUCはまだ 0.761。なぜ？</span>
+  </div>
+  <div class="claim-box">
+    <div class="claim-label">浮かび上がった認識</div>
+    高いAUCは内部誤帰属に反する証拠ではないかもしれない。それは、2つの異なる適応エージェントを比較することで外部観察者が恩恵を受けるという証拠である可能性がある――エージェント自身が決して行わない比較だ。
+  </div>
+</div>
+
+<div class="divider">ステージ2c：謎を解く</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 2c</span> 方策マッチドリプレイ</div>
+  <h2>ステージ2c：高いAUCは最初から方策幾何学だった</h2>
+  <p>H<sub>Q</sub> SRAAgentの行動シーケンスを両環境にリプレイ。残差には全体を通じて中立な B&#770; = I を使用。</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>SRA適応型AUC：<span class="stat">0.762</span> &rarr; リプレイAUC：<span class="stat">0.553</span>。低下量：<span class="stat">0.209</span>。</span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>行動のみAUC：<span class="stat">0.550</span> &asymp; 偶然。分類器は行動ラベルを読んでいなかった。</span></div>
+  <div class="chips">
+    <span class="chip born">ステージ2c 合格：AUCソース分解</span>
+    <span class="chip born">高AUC ＝ 方策誘発の軌跡幾何学であり、環境識別可能性ではない</span>
+  </div>
+  <div class="claim-box new">
+    <div class="claim-label">AUCの謎への答え</div>
+    H<sub>B</sub>エージェントは v<sub>B</sub> 方向に適応した。H<sub>Q</sub>エージェントは v<sub>Q</sub> 方向に適応した。それぞれ異なる行動方向が異なる残差構造を生み出し、外部分類器が読み取れるようになった。しかしH<sub>Q</sub>エージェントは内部では誤った方向を向いていた。2つの誤帰属エージェントの法科学的痕跡は識別可能である。エージェント自身は正しく診断していない。
+  </div>
+</div>
+
+<div class="divider">ステージ2d：幾何学の確認</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 2d</span> 多方向リプレイ表</div>
+  <h2>ステージ2d：AUCは行動方向の関数である</h2>
+  <p>6種類の行動ソースを両環境にリプレイした。</p>
+  <table class="summary-table" style="margin-bottom:16px">
+    <thead><tr><th>行動ソース</th><th>AUC</th><th>備考</th></tr></thead>
+    <tbody>
+      <tr><td>v_B 方策 / v_B-オラクル</td><td class="p">0.640&ndash;0.650</td><td>B識別方向</td></tr>
+      <tr><td>H_B エージェント行動</td><td class="p">0.639</td><td>v_B整合（正しい適応）</td></tr>
+      <tr><td>v_Q 方策</td><td>0.598</td><td>バースト方向</td></tr>
+      <tr><td>H_Q エージェント行動</td><td class="f">0.537</td><td>v_Q整合（誤帰属）</td></tr>
+      <tr><td>等方プローブ</td><td class="f">0.518</td><td>指向性バイアスなし</td></tr>
+    </tbody>
+  </table>
+  <div class="result-row"><span class="icon pass">&check;</span><span>v_B &gt; v_Q を確認。H_B 行動 &gt; H_Q 行動を確認。</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>v_Q &lt; 等方は<em>確認されなかった</em>（0.598 &gt; 0.518）。基準を修正：v_QはQバースト分散を励起し、AUCを等方より高める。主張は v_B &gt; v_Q であり、v_Q &lt; 等方ではない。</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>「識別オラクル」ラベルを削除：実装はv_B方策と等価であり、独立に最適化されていなかった。v_B-オラクルに改名。</span></div>
+  <div class="chips">
+    <span class="chip born">ステージ2d 合格：指向性AUC表</span>
+    <span class="chip died">誤った基準 v_Q &lt; 等方</span>
+    <span class="chip died">「識別オラクル」ラベル → v_B-オラクル（≡ v_B）</span>
+  </div>
+</div>
+
+<div class="divider">理論の改訂</div>
+
+<div class="phase current">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>現在</span> theory2.html &mdash; 改訂論文</div>
+  <h2>実験が理論に変えたもの</h2>
+  <div class="claim-box old">
+    <div class="claim-label">旧中心的主張（theory.html）</div>
+    誤帰属が外部残差の識別不可能性を引き起こす。方策が将来の軌跡証拠を汚染し、軌跡レベルの識別可能性が再帰的に劣化する。
+  </div>
+  <div class="claim-box new">
+    <div class="claim-label">新中心的主張（theory2.html）</div>
+    外部証拠は分類可能なまま残るが、適応エージェントはそれを誤った構造更新チャネルにマッピングする。見かけ上の残差分離可能性は方策誘発の軌跡幾何学によって構築される。外部分類器の識別可能性とエージェント内部の帰属正確性は独立である。
+  </div>
+  <table class="summary-table">
+    <thead><tr><th>主張</th><th>ステータス</th><th>根拠</th></tr></thead>
+    <tbody>
+      <tr><td>PE ⊥ 帰属分離可能性</td><td class="p">&check; 支持可能</td><td>形式的；保存</td></tr>
+      <tr><td>内因性 DE_B 枯渇</td><td class="p">&check; ステージ2a</td><td>wrong_strengthなしのSRAAgent</td></tr>
+      <tr><td>内部誤帰属（88.8% H_Q）</td><td class="p">&check; ステージ2b</td><td>帰属角</td></tr>
+      <tr><td>リプレイ下のAUC低下（0.209）</td><td class="p">&check; ステージ2c</td><td>方策マッチドリプレイ</td></tr>
+      <tr><td>AUCは行動方向の関数</td><td class="p">&check; ステージ2d</td><td>多方向表</td></tr>
+      <tr><td>適応ループでの残差AUC崩壊</td><td class="o">? ステージ2e 未解</td><td>未実施</td></tr>
+      <tr><td>SRAとABHTの差別化</td><td class="f">未達成</td><td>障害モードベンチマーク</td></tr>
+      <tr><td>高PE逆説</td><td class="f">撤回</td><td>形式的根拠なし</td></tr>
+    </tbody>
+  </table>
+  <div class="chips">
+    <span class="chip survived">PE ⊥ 帰属分離可能性</span>
+    <span class="chip survived">指向性崩壊メトリクス</span>
+    <span class="chip survived">MOAT v5gアーキテクチャ</span>
+    <span class="chip survived">既知の限界としての隠れ交絡因子</span>
+    <span class="chip born">内的帰属崩壊（改訂定義）</span>
+    <span class="chip born">D_ext &ne; AC（外部 &ne; 内部）</span>
+    <span class="chip born">帰属角診断法</span>
+    <span class="chip born">方策マッチドリプレイ手法</span>
+    <span class="chip born">指向性AUC表</span>
+    <span class="chip died">再帰的帰属汚染（実証的主張として）</span>
+    <span class="chip died">高PE逆説</span>
+    <span class="chip died">外部残差識別不可能性の主張</span>
+  </div>
+</div>
+
+<div class="divider">未解決問題</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>ステージ 2e</span> 未着手</div>
+  <h2>ステージ2e：同じループで外部AUCも崩壊させられるか？</h2>
+  <p>リプレイAUC = 0.553はステージ1の崩壊閾値（0.60）に近い。惜しいが、確認には至っていない。</p>
+  <p class="dim">ステージ2eが成功すれば：再帰的汚染の完全な主張が閉じる。ステージ2eが失敗しても：再定式化は維持され、否定的結果はABHT系方策がこの幾何学をカバーしていることを確認する――いずれにせよ価値あるベンチマーク知見となる。</p>
+  <div class="chips">
+    <span class="chip open">ステージ2e：未着手 &mdash; どちらの結果も有効</span>
+  </div>
+</div>
+
+</div><!-- /timeline -->
+
+<!-- ファイナルボックス -->
+<div class="final-box">
+  <h3>理論の現在地</h3>
+  <p>取り除けるものをすべて取り除いた後に残った理論はこれだ：</p>
+  <p style="margin:18px 0 0;font-style:italic;font-size:17px;line-height:1.92;font-family:'Cormorant Garamond',Georgia,serif;font-weight:300">適応システムは、内部の帰属マップが系統的に誤っている状態でも、外部観察者が分類できる残差軌跡を生成し得る。外部分類器の成功は方策の乖離が生んだ法科学的痕跡であり、いかなるエージェントが原因を正しく帰属させたことを示すものではない。外部証拠の質と内部帰属の忠実性の間の解離は、測定可能で再現可能であり、PE条件や標準的な閉ループ同定理論では対処されない。</p>
+  <p style="margin-top:22px;font-size:11.5px;opacity:.5;font-family:'Fira Code','Courier New',monospace;letter-spacing:.04em">これは元の主張より小さい。しかし、より精確に真である。</p>
+</div>
+
+<footer>
+  <a href="../index.html">ホーム →</a>
+  <a href="theory.html">理論 →</a>
+  <a href="appendix.html">補遺 →</a>
+  <a href="../sra/theory.html">SRA →</a>
+</footer>
+
+</div>
+</body>
+</html>
