@@ -1,5 +1,3 @@
-# Internal-Attribution-Collapse
-How Attribution Collapse became Internal Attribution Collapse
 # Internal Attribution Collapse
 
 ### Policy-Geometry Dependent Evidence and Structural Misattribution in Adaptive Systems
