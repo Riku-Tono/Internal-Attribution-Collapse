@@ -56,6 +56,11 @@ appendix/
     moat_v5g_stage2d_fixed
 results/
     moat_v5g_results_summary
+ja/
+   docs/
+    index.html
+    theory.html
+    appendix.html
 
 ---
 
