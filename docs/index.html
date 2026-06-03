@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How the Theory Evolved — index.html</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+SC:wght@400;600&family=Fira+Code:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:   #e9e4d9;
+  --cream2:  #ddd8cd;
+  --cream3:  #f2ede4;
+  --ink:     #1a1713;
+  --ink-mid: #4a453e;
+  --ink-dim: #7a746c;
+  --blue:    #3d6178;
+  --blue2:   #5a8aa8;
+  --blue-lt: #dde7ef;
+  --rust:    #8a4030;
+  --rust-lt: #f0e0dc;
+  --green:   #3a6448;
+  --green-lt:#ddeee4;
+  --amber:   #8a6030;
+  --amber-lt:#ede0cc;
+  --rule:    rgba(26,23,19,.14);
+  --mono:    'Fira Code','Courier New',monospace;
+  --serif:   'EB Garamond','Georgia',serif;
+  --display: 'Cormorant Garamond','Georgia',serif;
+  --sc:      'Cormorant SC','Cormorant Garamond',serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.82;
+  font-weight: 400;
+}
+
+.page { max-width: 51.25rem; margin: 0 auto; padding: 0 3rem 7.5rem; }
+@media (max-width: 41.25rem) { .page { padding: 0 1.375rem 5rem; } }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2rem 0 0;
+  margin-bottom: 4rem;
+}
+.top-nav a {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+.top-nav a:hover { color: var(--ink); }
+
+/* ── MASTHEAD ── */
+.masthead {
+  margin-bottom: 4rem;
+}
+
+.masthead-eyebrow {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+}
+
+.masthead h1 {
+  font-family: var(--display);
+  font-size: clamp(2.125rem, 5.2vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+
+.masthead h1 em {
+  font-style: italic;
+  color: var(--blue);
+  font-weight: 300;
+}
+
+.masthead-sub {
+  font-family: var(--display);
+  font-size: 1.275rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-dim);
+  max-width: 36.25rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.nav-bar {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .1em;
+  padding-top: 1.25rem;
+  border-top: 0.0625rem solid var(--rule);
+}
+.nav-bar a { color: var(--blue); text-decoration: none; }
+.nav-bar a:hover { text-decoration: underline; }
+
+/* ── NAV CARDS ── */
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 0.0625rem solid var(--rule);
+  margin-bottom: 4.5rem;
+}
+@media (max-width: 36.25rem) { .nav-cards { grid-template-columns: 1fr; } }
+
+.nav-card {
+  padding: 1.375rem 1.5rem 1.625rem;
+  border-right: 0.0625rem solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s;
+}
+.nav-card:last-child { border-right: none; }
+.nav-card:hover { background: var(--cream2); }
+.nav-card.active { background: var(--ink); color: var(--cream); }
+
+.nav-card-num {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+.nav-card.active .nav-card-num { color: rgba(233,228,217,.45); }
+
+.nav-card-title {
+  font-family: var(--sc);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.3;
+  margin-bottom: 0.4375rem;
+}
+
+.nav-card-file {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  color: var(--ink-dim);
+}
+.nav-card.active .nav-card-file { color: rgba(233,228,217,.45); }
+
+/* ── INTRO ── */
+.intro {
+  max-width: 40rem;
+  margin-bottom: 4.5rem;
+  font-size: 1.275rem;
+  line-height: 1.88;
+  color: var(--ink-mid);
+}
+.intro strong { color: var(--ink); font-weight: 600; }
+.intro p { margin-bottom: 1rem; }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 0; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 1.5rem;
+  top: 0; bottom: 0;
+  width: 0.0625rem;
+  background: var(--rule);
+}
+
+.phase { position: relative; padding-left: 4.25rem; margin-bottom: 4.25rem; }
+
+.phase-dot {
+  position: absolute;
+  left: 1rem; top: 0.5625rem;
+  width: 1rem; height: 1rem;
+  border-radius: 50%;
+  border: 0.125rem solid var(--ink-dim);
+  background: var(--cream);
+}
+.phase.current .phase-dot { background: var(--ink); border-color: var(--ink); }
+.phase.pruned  .phase-dot { border-color: var(--rule); background: var(--cream2); }
+
+.phase-meta {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.625rem;
+}
+.phase-meta span {
+  color: var(--blue);
+  margin-right: 0.5rem;
+}
+.phase.pruned .phase-meta span { color: var(--ink-dim); }
+
+.phase h2 {
+  font-family: var(--display);
+  font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 0.875rem;
+  line-height: 1.25;
+}
+.phase.pruned h2 {
+  color: var(--ink-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--rule);
+}
+
+.phase p { font-size: 1.1625rem; margin-bottom: 0.75rem; }
+.phase p.dim { color: var(--ink-dim); }
+
+/* ── CHIPS ── */
+.chips { display: flex; flex-wrap: wrap; gap: 0.4375rem; margin: 1rem 0; }
+.chip {
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  letter-spacing: .04em;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.125rem;
+  display: inline-block;
+}
+.chip.died     { background: var(--rust-lt);  color: var(--rust); }
+.chip.survived { background: var(--green-lt); color: var(--green); }
+.chip.born     { background: var(--blue-lt);  color: var(--blue); }
+.chip.open     { background: var(--amber-lt); color: var(--amber); }
+
+/* ── CLAIM BOXES ── */
+.claim-box {
+  background: var(--cream3);
+  border: 0.0625rem solid var(--rule);
+  border-left: 0.1875rem solid var(--ink-dim);
+  padding: 1.125rem 1.375rem;
+  margin: 1.125rem 0;
+  font-size: 1.125rem;
+  line-height: 1.7;
+}
+.claim-box.old { border-left-color: var(--ink-dim); }
+.claim-box.new { border-left-color: var(--green); }
+
+.claim-label {
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+.claim-box.new .claim-label { color: var(--green); }
+
+/* ── RESULT ROWS ── */
+.result-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 0.875rem;
+  align-items: start;
+  font-size: 1.0875rem;
+  margin: 0.625rem 0;
+}
+.icon { font-family: var(--mono); font-size: 0.8125rem; white-space: nowrap; }
+.icon.pass { color: var(--green); }
+.icon.fail { color: var(--rust); }
+.icon.open { color: var(--amber); }
+
+.stat {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  background: var(--cream2);
+  border: 0.0625rem solid var(--rule);
+  padding: 0.125rem 0.4375rem;
+  border-radius: 0.125rem;
+  white-space: nowrap;
+}
+
+/* ── DIVIDERS ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 3.25rem 0;
+  color: var(--ink-dim);
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.divider::before, .divider::after {
+  content: '';
+  flex: 1;
+  height: 0.0625rem;
+  background: var(--rule);
+}
+
+/* ── SUMMARY TABLE ── */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.975rem;
+  margin: 1.25rem 0;
+  font-family: var(--mono);
+}
+.summary-table th {
+  background: var(--ink);
+  color: var(--cream);
+  font-weight: 400;
+  font-size: 0.625rem;
+  letter-spacing: .1em;
+  padding: 0.625rem 0.875rem;
+  text-align: left;
+}
+.summary-table td {
+  padding: 0.5625rem 0.875rem;
+  border-bottom: 0.0625rem solid rgba(26,23,19,.07);
+  vertical-align: top;
+}
+.summary-table tr:nth-child(even) td { background: rgba(26,23,19,.025); }
+.p { color: var(--green); font-weight: 500; }
+.f { color: var(--rust); }
+.o { color: var(--amber); }
+
+/* ── FINAL BOX ── */
+.final-box {
+  background: var(--ink);
+  color: var(--cream);
+  padding: 2.5rem 2.75rem;
+  margin: 3.5rem 0;
+  font-size: 1.1625rem;
+  line-height: 1.88;
+}
+.final-box h3 {
+  font-family: var(--display);
+  font-size: 1.95rem;
+  font-weight: 300;
+  font-style: italic;
+  margin-bottom: 1.125rem;
+  color: white;
+}
+
+/* ── CODE ── */
+code {
+  font-family: var(--mono);
+  font-size: .8em;
+  background: var(--cream2);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.125rem;
+  color: var(--ink-mid);
+}
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 5rem;
+  padding-top: 1.375rem;
+  border-top: 0.0625rem solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  line-height: 2.4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.375rem;
+}
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* ── MOBILE FIXES ── */
+@media (max-width: 30rem) {
+  body { font-size: 1.2rem; }
+
+  .top-nav { margin-bottom: 2.25rem; }
+
+  .masthead { margin-bottom: 2.5rem; }
+  .masthead h1 { font-size: clamp(1.625rem, 7vw, 2.125rem); }
+  .masthead-sub { font-size: 1.125rem; }
+
+  .nav-cards { margin-bottom: 3rem; }
+
+  /* Timeline: reduce left indent so content doesn't get squeezed */
+  .timeline::before { left: 0.875rem; }
+  .phase {
+    padding-left: 2.625rem;
+    margin-bottom: 3rem;
+  }
+  .phase-dot { left: 0.375rem; width: 0.875rem; height: 0.875rem; }
+
+  /* Tables: horizontal scroll instead of overflow */
+  .summary-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+  }
+
+  /* stat badges: allow wrapping on very small screens */
+  .stat { white-space: normal; word-break: break-word; }
+
+  /* result rows: tighter gap */
+  .result-row { gap: 0.375rem 0.625rem; font-size: 1.0125rem; }
+
+  /* claim boxes */
+  .claim-box { padding: 0.875rem 1rem; font-size: 1.05rem; }
+
+  /* final box: reduce padding */
+  .final-box { padding: 1.5rem 1.25rem; }
+  .final-box h3 { font-size: 1.575rem; }
+  .final-box p { font-size: 1.0875rem; }
+
+  /* chips: smaller on mobile */
+  .chip { font-size: 0.625rem; padding: 0.1875rem 0.5rem; }
+
+  /* divider text: prevent overflow */
+  .divider { font-size: 0.5625rem; gap: 0.625rem; margin: 2.25rem 0; }
+
+  /* nav-bar links: stack them */
+  .nav-bar { gap: 1rem; }
+
+  /* hide inline <br> on mobile */
+  .br-desktop { display: none; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Top nav -->
+<nav class="top-nav">
+  <a href="../index.html">← HOME</a>
+</nav>
+
+<!-- Masthead -->
+
+
+<div class="masthead">
+
+<!--  <div class="masthead-eyebrow">index.html · theory evolution log</div> -->
+
+
+
+  <h1>How <em>Attribution Collapse</em><span class="br-desktop"><br></span> became <em>Internal Attribution Collapse</em></h1>
+  <div class="masthead-sub">A record of what was discarded, what survived, and what was discovered across the multi-AI peer-review relay and experimental chain Stage&nbsp;1&ndash;2d.</div>
+  <div class="nav-bar">
+    <a href="./sra/theory.html">SRA (original)</a>
+    <a href="theory.html">theory</a>
+    <a href="appendix.html">appendix</a>
+  </div>
+</div>
+
+<!-- Nav cards -->
+<div class="nav-cards">
+  <a class="nav-card active" href="index.html">
+    <div class="nav-card-num">01 / Overview</div>
+    <div class="nav-card-title">About This Archive</div>
+    <div class="nav-card-file">index.html</div>
+  </a>
+  <a class="nav-card" href="theory.html">
+    <div class="nav-card-num">02 / Theory</div>
+    <div class="nav-card-title">Theory (SRA / MOAT v5g)</div>
+    <div class="nav-card-file">theory.html</div>
+  </a>
+  <a class="nav-card" href="appendix.html">
+    <div class="nav-card-num">03 / Appendix</div>
+    <div class="nav-card-title">Code, Logs &amp; Supplementary Material</div>
+    <div class="nav-card-file">appendix.html</div>
+  </a>
+</div>
+
+<!-- Intro -->
+<div class="intro">
+  <p>This document traces how the theory of Attribution Collapse in Adaptive Systems was built, broken, rebuilt, and sharpened over multiple rounds of peer review by Claude, Codex, ChatGPT, Gemini, and Perplexity.</p>
+  <p>It is not a polished narrative. It is an honest log of <strong>what each stage of pressure removed, and what remained.</strong> Theory, as it turns out, is mostly the process of finding out which parts of your idea are load-bearing.</p>
+</div>
+
+<!-- Timeline -->
+<div class="timeline">
+
+<div class="phase pruned">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Phase 0</span> Original version &mdash; entirely removed</div>
+  <h2>Observer / Selfhood / Consciousness Theory</h2>
+  <p class="dim">The original document (Operational Embedded Agency Theory) centered on observer definitions, F-coalgebraic selfhood fixed points, AQFT ontology via von Neumann algebras, and connections to IIT.</p>
+  <div class="chips">
+    <span class="chip died">observer (operational definition)</span>
+    <span class="chip died">self / selfhood (F-coalgebraic)</span>
+    <span class="chip died">consciousness / qualia</span>
+    <span class="chip died">AQFT ontology</span>
+    <span class="chip died">IIT connection</span>
+    <span class="chip died">High-PE Paradox (initial)</span>
+  </div>
+  <div class="claim-box old">
+    <div class="claim-label">Removed &mdash; reason</div>
+    These concepts are not amenable to peer review in the standard engineering/ML sense and are not falsifiable within the MOAT benchmark framework. The multi-AI review confirmed that the engineering failure mode does not require phenomenological framing. Removing them made the surviving core more precise, not less.
+  </div>
+</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Phase 1</span> theory.html &mdash; engineering failure formulation</div>
+  <h2>Attribution Collapse as External Residual Indistinguishability</h2>
+  <p>After removing observer/consciousness framing, the surviving core became: an adaptive system under partial observability can, through its own modified policy, distort the statistical structure of future residuals, recursively destroying its own future identifiability.</p>
+  <div class="claim-box old">
+    <div class="claim-label">theory.html &mdash; Abstract Claim</div>
+    An update to the wrong latent channel distorts the policy; the distorted policy contaminates future trajectory evidence; and trajectory-level distinguishability is recursively degraded (Recursive Attribution Poisoning).
+  </div>
+  <div class="chips">
+    <span class="chip survived">PE &perp; Attribution Separability</span>
+    <span class="chip survived">Directional Collapse metric</span>
+    <span class="chip survived">MOAT v5g design</span>
+    <span class="chip survived">Contamination Jacobian (sketch)</span>
+    <span class="chip survived">Hidden Confounder analysis</span>
+    <span class="chip died">High-PE Paradox (formally retracted)</span>
+    <span class="chip died">Strong "Recursive Attribution Poisoning" empirical claim</span>
+  </div>
+  <p class="dim">The benchmark code (moat_v5g.py) was written to validate this. Code review identified the structural gap: <code>wrong_strength</code> was externally injected, not generated by the agent. Stage 1 was geometry validation, not a demonstration of the closed loop.</p>
+</div>
+
+<div class="divider">First experiment</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 1</span> External geometry validation</div>
+  <h2>Stage 1: Directional Depletion &rarr; AUC Collapse</h2>
+  <p>External <code>wrong_strength</code> reduces <code>DE_B</code> while holding PE and total energy fixed. AUC_residual collapses below 0.60.</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>Directional depletion alone, independent of PE or energy, is sufficient to destroy residual trajectory distinguishability.</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>Does not demonstrate the closed loop. Depletion is externally supplied.</span></div>
+  <div class="chips">
+    <span class="chip born">Stage 1: Geometry Validation (term coined)</span>
+    <span class="chip open">Stage 2: Endogenous loop &mdash; still missing</span>
+  </div>
+</div>
+
+<div class="divider">Codex / ChatGPT: &ldquo;wrong_strength must die&rdquo;</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 2a</span> Endogenous directional depletion</div>
+  <h2>Stage 2a: SRAAgent Generates Depletion Without External Injection</h2>
+  <p><code>wrong_strength</code> removed. SRAAgent uses LS update on B channel only, no Q-burst model.</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span><span class="stat">DE_B H_B = 0.826</span> &nbsp; <span class="stat">DE_B H_Q = 0.406</span> &nbsp; contrast <span class="stat">0.420</span></span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>PE (H_Q) = 0.300 &ge; threshold. Energy = 2.000. Collapse is directional, not energetic.</span></div>
+  <div class="result-row"><span class="icon open">?</span><span>AUC_residual late = 0.761. Not collapsed. Why is it high?</span></div>
+  <div class="chips">
+    <span class="chip born">Stage 2a PASS: endogenous directional depletion</span>
+    <span class="chip open">AUC mystery: why 0.761?</span>
+  </div>
+</div>
+
+<div class="divider">Stage 2b: looking inside the agent</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 2b</span> Attribution angle &mdash; primary internal evidence</div>
+  <h2>Stage 2b: The Agent Is Pointing the Wrong Way</h2>
+  <p>Dominant direction of <code>B_est &minus; I</code> compared to <code>v_B</code> and <code>v_Q</code> at episode end.</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>H_B correct rate <span class="stat">0.983</span>. Mean angle to v_B: <span class="stat">6.9&deg;</span>. Agent correctly learns B-drift.</span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>H_Q error rate <span class="stat">0.888</span>. Mean angle to v_Q: <span class="stat">15.3&deg;</span>. In 88.8% of episodes, agent&rsquo;s estimated drift direction is closer to the <em>Q-burst direction</em>.</span></div>
+  <div class="chips">
+    <span class="chip born">Stage 2b PASS: agent-internal misattribution</span>
+    <span class="chip born">New core concept: external &ne; internal distinguishability</span>
+    <span class="chip open">AUC still 0.761. Why?</span>
+  </div>
+  <div class="claim-box">
+    <div class="claim-label">Emerging realization</div>
+    The high AUC may not be evidence against internal misattribution. It may be evidence that external observers benefit from comparing two differently-adapted agents &mdash; a comparison the agents themselves never make.
+  </div>
+</div>
+
+<div class="divider">Stage 2c: killing the mystery</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 2c</span> Policy-matched replay</div>
+  <h2>Stage 2c: The High AUC Was Policy Geometry All Along</h2>
+  <p>H<sub>Q</sub> SRAAgent action sequences replayed into both environments. Residuals use neutral B&#770; = I throughout.</p>
+  <div class="result-row"><span class="icon pass">&check;</span><span>SRA adaptive AUC: <span class="stat">0.762</span> &rarr; Replay AUC: <span class="stat">0.553</span>. Drop: <span class="stat">0.209</span>.</span></div>
+  <div class="result-row"><span class="icon pass">&check;</span><span>Action-only AUC: <span class="stat">0.550</span> &asymp; chance. Classifier was not reading action labels.</span></div>
+  <div class="chips">
+    <span class="chip born">Stage 2c PASS: AUC source decomposed</span>
+    <span class="chip born">High AUC = divergent policy geometries, not environment distinguishability</span>
+  </div>
+  <div class="claim-box new">
+    <div class="claim-label">Answer to the AUC mystery</div>
+    The H<sub>B</sub> agent adapted toward v<sub>B</sub>. The H<sub>Q</sub> agent adapted toward v<sub>Q</sub>. Their different action directions created different residual structures that an external classifier could read. But the H<sub>Q</sub> agent was internally pointing the wrong way. The forensic artifact of two misattributing agents is distinguishable. The agents themselves are not diagnosing correctly.
+  </div>
+</div>
+
+<div class="divider">Stage 2d: confirming the geometry</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 2d</span> Multi-directional replay table</div>
+  <h2>Stage 2d: AUC Is a Function of Action Direction</h2>
+  <p>Six action sources replayed into both environments.</p>
+  <table class="summary-table" style="margin-bottom:16px">
+    <thead><tr><th>Action source</th><th>AUC</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>v_B policy / v_B-oracle</td><td class="p">0.640&ndash;0.650</td><td>B-discriminative direction</td></tr>
+      <tr><td>H_B agent actions</td><td class="p">0.639</td><td>v_B-aligned (correct adaptation)</td></tr>
+      <tr><td>v_Q policy</td><td>0.598</td><td>Burst direction</td></tr>
+      <tr><td>H_Q agent actions</td><td class="f">0.537</td><td>v_Q-aligned (misattributed)</td></tr>
+      <tr><td>Isotropic probe</td><td class="f">0.518</td><td>No directional bias</td></tr>
+    </tbody>
+  </table>
+  <div class="result-row"><span class="icon pass">&check;</span><span>v_B &gt; v_Q confirmed. H_B actions &gt; H_Q actions confirmed.</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>v_Q &lt; isotropic was <em>not</em> confirmed (0.598 &gt; 0.518). Criterion corrected: v_Q excites Q-burst variance, raising AUC above isotropic. Claim is v_B &gt; v_Q, not v_Q &lt; isotropic.</span></div>
+  <div class="result-row"><span class="icon fail">&times;</span><span>&ldquo;discriminative oracle&rdquo; label removed: implementation was &equiv; v_B policy, not independently optimized. Renamed to v_B-oracle.</span></div>
+  <div class="chips">
+    <span class="chip born">Stage 2d PASS: directional AUC table</span>
+    <span class="chip died">Wrong criterion v_Q &lt; isotropic</span>
+    <span class="chip died">&ldquo;discriminative oracle&rdquo; label &rarr; v_B-oracle (&equiv; v_B)</span>
+  </div>
+</div>
+
+<div class="divider">Theory revision</div>
+
+<div class="phase current">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Current</span> theory2.html &mdash; revised paper</div>
+  <h2>What the Experiments Changed in the Theory</h2>
+  <div class="claim-box old">
+    <div class="claim-label">Old central claim (theory.html)</div>
+    Misattribution causes external residual indistinguishability. The policy contaminates future trajectory evidence; trajectory-level distinguishability is recursively degraded.
+  </div>
+  <div class="claim-box new">
+    <div class="claim-label">New central claim (theory2.html)</div>
+    External evidence remains classifiable, but the adaptive agent maps it into the wrong structural update channel. The apparent residual separability is constructed by policy-induced trajectory geometry. External classifier distinguishability and agent-internal attribution correctness are independent.
+  </div>
+  <table class="summary-table">
+    <thead><tr><th>Claim</th><th>Status</th><th>Determined by</th></tr></thead>
+    <tbody>
+      <tr><td>PE &perp; Attribution Separability</td><td class="p">&check; defensible</td><td>Formal; preserved</td></tr>
+      <tr><td>Endogenous DE_B depletion</td><td class="p">&check; Stage 2a</td><td>SRAAgent without wrong_strength</td></tr>
+      <tr><td>Internal misattribution (88.8% H_Q)</td><td class="p">&check; Stage 2b</td><td>Attribution angle</td></tr>
+      <tr><td>AUC drop under replay (0.209)</td><td class="p">&check; Stage 2c</td><td>Policy-matched replay</td></tr>
+      <tr><td>AUC is function of action direction</td><td class="p">&check; Stage 2d</td><td>Multi-directional table</td></tr>
+      <tr><td>Residual AUC collapse in adaptive loop</td><td class="o">? Stage 2e open</td><td>Not yet</td></tr>
+      <tr><td>SRA distinct from ABHT</td><td class="f">not yet</td><td>Failure-mode benchmark</td></tr>
+      <tr><td>High-PE Paradox</td><td class="f">retracted</td><td>No formal support</td></tr>
+    </tbody>
+  </table>
+  <div class="chips">
+    <span class="chip survived">PE &perp; Attribution Separability</span>
+    <span class="chip survived">Directional Collapse metric</span>
+    <span class="chip survived">MOAT v5g architecture</span>
+    <span class="chip survived">Hidden Confounder as known limit</span>
+    <span class="chip born">Internal Attribution Collapse (revised definition)</span>
+    <span class="chip born">D_ext &ne; AC (external &ne; internal)</span>
+    <span class="chip born">Attribution angle diagnostic</span>
+    <span class="chip born">Policy-matched replay method</span>
+    <span class="chip born">Directional AUC table</span>
+    <span class="chip died">Recursive Attribution Poisoning as empirical claim</span>
+    <span class="chip died">High-PE Paradox</span>
+    <span class="chip died">External residual indistinguishability claim</span>
+  </div>
+</div>
+
+<div class="divider">Open question</div>
+
+<div class="phase">
+  <div class="phase-dot"></div>
+  <div class="phase-meta"><span>Stage 2e</span> Open &mdash; not yet attempted</div>
+  <h2>Stage 2e: Can the Same Loop Also Collapse External AUC?</h2>
+  <p>Replay AUC = 0.553 is near the Stage 1 collapse threshold (0.60). Close, but not confirmed.</p>
+  <p class="dim">If Stage 2e succeeds: the full recursive poisoning claim closes. If Stage 2e fails: the reframing holds, and the negative result confirms that ABHT-family policies cover this geometry &mdash; a valuable benchmark finding either way.</p>
+  <div class="chips">
+    <span class="chip open">Stage 2e: open &mdash; two valid outcomes</span>
+  </div>
+</div>
+
+</div><!-- /timeline -->
+
+<!-- Final box -->
+<div class="final-box">
+  <h3>What the theory is now</h3>
+  <p>The theory that remained after everything that could be removed was removed is this:</p>
+  <p style="margin:18px 0 0;font-style:italic;font-size:17px;line-height:1.92;font-family:'Cormorant Garamond',Georgia,serif;font-weight:300">An adaptive system can produce residual trajectories that are classifiable by an external observer while its internal attribution map is systematically wrong. The external classifier&rsquo;s success is a forensic artifact of divergent policies &mdash; not a sign that any agent has correctly attributed the cause. The dissociation between external evidence quality and internal attribution fidelity is measurable, reproducible, and not addressed by PE conditions or standard closed-loop identification theory.</p>
+  <p style="margin-top:22px;font-size:11.5px;opacity:.5;font-family:'Fira Code','Courier New',monospace;letter-spacing:.04em">This is smaller than the original claim. It is also more precisely true.</p>
+</div>
+
+<footer>
+
+<!-- <span>index.html · theory evolution log</span> -->
+  <a href="../index.html">Home →</a>
+  <a href="theory.html">theory →</a>
+  <a href="appendix.html">appendix →</a>
+  <a href="../sra/theory.html">SRA →</a>
+</footer>
+
+</div>
+</body>
+</html>

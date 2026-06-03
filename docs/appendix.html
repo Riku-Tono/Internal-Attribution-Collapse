@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appendix: Models and Relay Materials — Attribution Collapse / SRA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Cormorant+SC:wght@400;600&family=Fira+Code:wght@300;400&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream:   #e9e4d9;
+  --cream2:  #ddd8cd;
+  --cream3:  #f2ede4;
+  --ink:     #1a1713;
+  --ink-mid: #4a453e;
+  --ink-dim: #7a746c;
+  --blue:    #3d6178;
+  --blue2:   #5a8aa8;
+  --blue-lt: #dde7ef;
+  --rust:    #8a4030;
+  --green:   #3a6448;
+  --green-lt:#ddeee4;
+  --amber:   #8a6030;
+  --rule:    rgba(26,23,19,.14);
+  --mono:    'Fira Code','Courier New',monospace;
+  --serif:   'EB Garamond','Georgia',serif;
+  --display: 'Cormorant Garamond','Georgia',serif;
+  --sc:      'Cormorant SC','Cormorant Garamond',serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  line-height: 1.82;
+  font-weight: 400;
+}
+
+.page { max-width: 51.25rem; margin: 0 auto; padding: 0 3rem 7.5rem; }
+@media (max-width: 41.25rem) { .page { padding: 0 1.375rem 5rem; } }
+
+/* ── TOP NAV ── */
+.top-nav {
+  display: flex;
+  justify-content: flex-end;
+  padding: 2rem 0 0;
+  margin-bottom: 4rem;
+}
+.top-nav a {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  text-decoration: none;
+}
+.top-nav a:hover { color: var(--ink); }
+
+/* ── HEADER ── */
+.doc-header { margin-bottom: 4rem; }
+
+.doc-tag {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+}
+
+h1 {
+  font-family: var(--display);
+  font-size: clamp(2.125rem, 5.2vw, 3.5rem);
+  font-weight: 300;
+  line-height: 1.12;
+  letter-spacing: -.01em;
+  color: var(--ink);
+  margin-bottom: 1.125rem;
+}
+h1 em { font-style: italic; color: var(--blue); font-weight: 300; }
+
+.subtitle {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 300;
+  color: var(--ink-dim);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.back-links {
+  display: flex;
+  gap: 1.75rem;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .1em;
+  padding-top: 1.25rem;
+  border-top: 0.0625rem solid var(--rule);
+}
+.back-links a { color: var(--blue); text-decoration: none; }
+.back-links a:hover { text-decoration: underline; }
+
+/* ── NAV CARDS ── */
+.nav-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 0.0625rem solid var(--rule);
+  margin-bottom: 4.5rem;
+}
+@media (max-width: 36.25rem) { .nav-cards { grid-template-columns: 1fr; } }
+
+.nav-card {
+  padding: 1.375rem 1.5rem 1.625rem;
+  border-right: 0.0625rem solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .2s;
+}
+.nav-card:last-child { border-right: none; }
+.nav-card:hover { background: var(--cream2); }
+.nav-card.active { background: var(--ink); color: var(--cream); }
+
+.nav-card-num {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.5rem;
+}
+.nav-card.active .nav-card-num { color: rgba(233,228,217,.45); }
+
+.nav-card-title {
+  font-family: var(--sc);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+  line-height: 1.3;
+  margin-bottom: 0.4375rem;
+}
+
+.nav-card-file {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--ink-dim);
+}
+.nav-card.active .nav-card-file { color: rgba(233,228,217,.45); }
+
+/* ── SECTIONS ── */
+main { padding: 0; }
+section { margin-bottom: 4.5rem; }
+
+h2 {
+  font-family: var(--sc);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 1.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 0.0625rem solid var(--rule);
+}
+.sec-label {
+  color: var(--blue);
+  margin-right: 0.625rem;
+}
+
+/* ── RESOURCE LIST ── */
+.resource-list {
+  display: flex;
+  flex-direction: column;
+  border: 0.0625rem solid var(--rule);
+  overflow: hidden;
+}
+
+.resource-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: start;
+  gap: 1rem;
+  padding: 1.125rem 1.375rem;
+  border-bottom: 0.0625rem solid var(--rule);
+  text-decoration: none;
+  color: var(--ink);
+  transition: background .15s;
+}
+.resource-item:last-child { border-bottom: none; }
+.resource-item:hover { background: rgba(61,97,120,.04); }
+
+.resource-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.resource-filename {
+  font-family: var(--mono);
+  font-size: 0.71875rem;
+  color: var(--blue);
+  letter-spacing: .03em;
+}
+
+.resource-title {
+  font-family: var(--serif);
+  font-size: 1.1625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--ink);
+}
+
+.resource-desc {
+  font-family: var(--serif);
+  font-size: 1.0125rem;
+  color: var(--ink-dim);
+  line-height: 1.55;
+  margin-top: 0.125rem;
+}
+
+.resource-badge {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5625rem;
+  border: 0.0625rem solid var(--rule);
+  color: var(--ink-dim);
+  white-space: nowrap;
+  align-self: start;
+  flex-shrink: 0;
+}
+.resource-badge.primary {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.version-tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.59375rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 0.125rem 0.4375rem;
+  border: 0.0625rem solid var(--green);
+  color: var(--green);
+  margin-left: 0.5rem;
+  vertical-align: middle;
+}
+.version-tag.superseded {
+  border-color: var(--rule);
+  color: var(--ink-dim);
+}
+
+/* ── PHASE LABEL ── */
+.phase-label {
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  padding: 0.625rem 1.375rem;
+  background: rgba(26,23,19,.03);
+  border-bottom: 0.0625rem solid var(--rule);
+}
+
+/* ── NOTE ── */
+.note {
+  border-left: 0.1875rem solid var(--rule);
+  padding: 0.75rem 1.25rem;
+  background: rgba(26,23,19,.02);
+  font-family: var(--serif);
+  font-size: 1.0125rem;
+  color: var(--ink-dim);
+  margin-top: 1rem;
+  line-height: 1.65;
+}
+.note a { color: var(--blue); text-decoration: none; }
+.note a:hover { text-decoration: underline; }
+
+/* ── FOOTER ── */
+footer {
+  margin-top: 5rem;
+  padding-top: 1.375rem;
+  border-top: 0.0625rem solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.65625rem;
+  color: var(--ink-dim);
+  letter-spacing: .06em;
+  line-height: 2.4;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.375rem;
+}
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (max-width: 40rem) {
+  .resource-item { grid-template-columns: 1fr; gap: 0.5rem; padding: 0.875rem 1rem; }
+  .resource-badge { width: fit-content; }
+}
+
+/* ── MOBILE FIXES ── */
+
+/* Long monospace filenames must wrap on narrow screens */
+.resource-filename {
+  overflow-wrap: break-word;
+  word-break: break-all;
+}
+
+@media (max-width: 30rem) {
+  body { font-size: 1.2rem; }
+
+  /* Header */
+  .doc-header { margin-bottom: 2.5rem; }
+  h1 { font-size: clamp(1.625rem, 7vw, 2.125rem); }
+  h1 .br-mobile { display: none; }
+  .subtitle { font-size: 1.125rem; }
+
+  /* Nav cards: tighten padding */
+  .nav-card { padding: 1rem 1.125rem 1.25rem; }
+
+  /* Sections */
+  section { margin-bottom: 3rem; }
+
+  /* Resource list */
+  .resource-title { font-size: 1.05rem; }
+  .resource-desc  { font-size: 0.9375rem; }
+  .resource-filename { font-size: 0.65625rem; }
+
+  /* Phase label */
+  .phase-label { padding: 0.5rem 1rem; font-size: 0.59375rem; }
+
+  /* Note */
+  .note { padding: 0.625rem 0.875rem; font-size: 0.975rem; }
+
+  /* back-links: tighter gap */
+  .back-links { gap: 1rem; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Top nav -->
+<nav class="top-nav">
+  <a href="../index.html">← HOME</a>
+</nav>
+
+<!-- Header -->
+<header class="doc-header">
+  <div class="doc-tag">appendix.html · models and relay materials</div>
+  <h1>Appendix<span class="br-mobile"><br></span> <em>Models and Relay Materials</em></h1>
+  <div class="subtitle">MOAT Benchmark Code · Full Relay Logs</div>
+  <nav class="back-links">
+    <a href="index.html">About This Archive</a>
+    <a href="theory.html">Theory</a>
+  </nav>
+</header>
+
+<!-- Nav cards -->
+<div class="nav-cards">
+  <a class="nav-card" href="index.html">
+    <div class="nav-card-num">01 / Overview</div>
+    <div class="nav-card-title">About This Archive</div>
+    <div class="nav-card-file">index.html</div>
+  </a>
+  <a class="nav-card" href="theory.html">
+    <div class="nav-card-num">02 / Theory</div>
+    <div class="nav-card-title">Theory (SRA / MOAT v5g)</div>
+    <div class="nav-card-file">theory.html</div>
+  </a>
+  <a class="nav-card active" href="appendix.html">
+    <div class="nav-card-num">03 / Appendix</div>
+    <div class="nav-card-title">Code, Logs &amp; Supplementary Material</div>
+    <div class="nav-card-file">appendix.html</div>
+  </a>
+</div>
+
+<main>
+
+  <!-- A: Models / Code -->
+  <section id="code">
+    <h2><span class="sec-label">A</span>Models / Code</h2>
+
+
+
+<div class="subtitle">MOAT v5g Benchmark Code · Stage 1–2d Results · Full Relay Log</div>
+
+    <div class="resource-list">
+
+      <a class="resource-item" href="./appendix/moat_v5g_results_summary.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_results_summary.py</span>
+          <span class="resource-title">
+            MOAT v5g — Results Summary
+            <span class="version-tag">Current</span>
+          </span>
+          <span class="resource-desc">
+            Consolidated results summary across all Stage 1–2d experiments.
+            Aggregates AUC metrics, attribution angle statistics, and directional energy contrasts.
+          </span>
+        </div>
+        <span class="resource-badge primary">Python · .py</span>
+      </a>
+
+      <a class="resource-item" href="./appendix/moat_v5g_stage2d_fixed.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_stage2d_fixed.py</span>
+          <span class="resource-title">MOAT v5g — Stage 2d (Fixed)</span>
+          <span class="resource-desc">
+            Corrected multi-directional replay table. Fixes criterion from v_Q &lt; isotropic
+            to v_B &gt; v_Q; renames "discriminative oracle" to v_B-oracle.
+          </span>
+        </div>
+        <span class="resource-badge primary">Python · .py</span>
+      </a>
+
+      <a class="resource-item" href="./appendix/moat_v5g_stage2d.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_stage2d.py</span>
+          <span class="resource-title">
+            MOAT v5g — Stage 2d
+            <span class="version-tag superseded">Superseded</span>
+          </span>
+          <span class="resource-desc">
+            Multi-directional replay table: six action sources replayed into both environments.
+            Initial version prior to criterion correction.
+          </span>
+        </div>
+        <span class="resource-badge">Python · .py</span>
+      </a>
+
+      <a class="resource-item" href="./appendix/moat_v5g_stage2c.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_stage2c.py</span>
+          <span class="resource-title">MOAT v5g — Stage 2c</span>
+          <span class="resource-desc">
+            Policy-matched replay experiment. Demonstrates AUC drop 0.762 → 0.553
+            under neutral B̂ = I; confirms policy geometry as the AUC source.
+          </span>
+        </div>
+        <span class="resource-badge">Python · .py</span>
+      </a>
+
+      <a class="resource-item" href="./appendix/moat_v5g_stage2b.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_stage2b.py</span>
+          <span class="resource-title">MOAT v5g — Stage 2b</span>
+          <span class="resource-desc">
+            Attribution angle experiment. Compares dominant direction of B_est − I
+            against v_B and v_Q at episode end; confirms 88.8% misattribution rate under H_Q.
+          </span>
+        </div>
+        <span class="resource-badge">Python · .py</span>
+      </a>
+
+      <a class="resource-item" href="./appendix/moat_v5g_stage2.py" download>
+        <div class="resource-main">
+          <span class="resource-filename">appendix/moat_v5g_stage2.py</span>
+          <span class="resource-title">MOAT v5g — Stage 2a</span>
+          <span class="resource-desc">
+            Endogenous directional depletion experiment. Removes wrong_strength;
+            SRAAgent runs from B̂₀ = I and generates DE_B contrast 0.420 autonomously.
+          </span>
+        </div>
+        <span class="resource-badge">Python · .py</span>
+      </a>
+
+    </div>
+
+    <p class="note">
+
+
+The code and experiment descriptions were generated and revised through the relay.
+Claude produced the main implementation drafts; Codex and ChatGPT provided review,
+claim-boundary corrections, and interpretation checks. stage2d_fixed and
+v5g_results_summary are the current reference versions.
+
+    </p>
+  </section>
+
+
+  <!-- B: Relay Materials -->
+  <section id="relay">
+    <h2><span class="sec-label">B</span>Relay Materials</h2>
+
+    <div class="resource-list">
+
+
+<div class="phase-label">Relay Log — From Observer-Agent Theory to MOAT v5g</div>
+
+<a class="resource-item" href="./log/moat_log.txt" target="_blank" rel="noopener">
+  <div class="resource-main">
+    <span class="resource-filename">log/moat_log.txt</span>
+
+    <span class="resource-title">Full Relay Log</span>
+
+    <span class="resource-desc">
+
+      Complete dialogue relay documenting the transition from the earlier Observer-Agent /
+      SRA framing to the MOAT v5g benchmark. Includes the pruning of consciousness,
+      observer, and high-level philosophical claims; the shift toward ABHT-adjacent
+      benchmark framing; and the Stage 1–2d experimental reinterpretation of attribution collapse.
+
+    </span>
+  </div>
+  <span class="resource-badge">Full text</span>
+</a>
+
+
+
+
+
+    </div>
+
+<!-- <p class="note">
+      The Phase 1 log is retained as primary source material for the generation process.
+      You can trace which questions and answers gave rise to the theory text, and which concepts
+      were pruned at which review stage.
+      For details on provenance, see <a href="index.html">index.html</a>.
+    </p> -->
+  </section>
+
+</main>
+
+<footer>
+  <a href="../index.html">Home →</a>
+  <a href="index.html">index →</a>
+  <a href="theory.html">theory →</a>
+  <a href="../sra/theory.html">SRA →</a>
+</footer>
+
+</div>
+</body>
+</html>
