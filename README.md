@@ -42,22 +42,20 @@ The resulting evidence becomes dependent on the geometry induced by the policy i
 
 ## Repository Structure
 
-```text
-theory/
+README.md
+moat_v5g_stage2d_fixed
+docs/
+    index.html
     theory.html
-
-appendix/
     appendix.html
-
-experiments/
-    sra_agent.py
-    moat_v5g.py
-    replay_analysis.py
-
+appendix/
+    moat_v5g_stage2
+    moat_v5g_stage2b
+    moat_v5g_stage2c
+    moat_v5g_stage2d
+    moat_v5g_stage2d_fixed
 results/
-    figures/
-    logs/
-    tables/
+    moat_v5g_results_summary
 ```
 
 ---
