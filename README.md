@@ -44,6 +44,7 @@ The resulting evidence becomes dependent on the geometry induced by the policy i
 
 README.md
 moat_v5g_stage2d_fixed
+moat_v5g_stage2e
 docs/
     index.html
     theory.html
@@ -56,6 +57,8 @@ appendix/
     moat_v5g_stage2d_fixed
 results/
     moat_v5g_results_summary
+    moat_v5g_stage2e_explore_results
+    moat_v5g_stage2e_explore_per_seed
 ja/
    docs/
     index.html
@@ -119,6 +122,47 @@ AUC varies as a function of action direction.
 
 This suggests that evidence quality cannot be interpreted independently from policy geometry.
 
+### Stage 2e
+
+Stage 2e tested whether the same endogenous adaptive loop can also collapse external residual AUC while preserving the mechanism established in Stages 2a–2d.
+
+The revised exploratory protocol used:
+
+* 27 PE-preserving parameter cells,
+* 3 seeds per cell,
+* 240 episodes per hypothesis and seed,
+* a fixed 17-step late evaluation window,
+* the conservative score `max(linear AUC, RFF AUC)`,
+* simultaneous attribution, directional-depletion, PE, energy, action-leakage, and positive-control gates.
+
+Result:
+
+* 81 / 81 runs completed successfully.
+* Exploratory candidates: **0 / 27 cells**.
+* Conservative residual AUC range: **0.9535–1.0000**.
+* Best cell mean residual AUC: **0.9744**, far above the collapse threshold of 0.60.
+* Attribution error, directional depletion, PE preservation, energy preservation, and the vB-aligned positive control passed in **81 / 81 runs**.
+* The action-only leakage gate passed in **68 / 81 runs**.
+
+The untouched-seed confirmatory phase was not run because no exploratory cell met the predeclared candidate rule.
+
+The Stage 2e result is therefore negative: the tested endogenous loop did not produce external residual AUC collapse. Internal structural misattribution and external nonlinear distinguishability continued to coexist.
+
+---
+
+## Evaluation Protocol
+
+The Stage 2e implementation separates exploration from confirmation:
+
+* **Exploration** may nominate a parameter cell but cannot declare a Stage 2e success.
+* **Confirmation** requires one predeclared cell, fresh seeds, 600 episodes per hypothesis and seed, and 95% bootstrap bounds satisfying every mechanism and evaluation gate.
+
+Low-PE settings cannot count as confirmation. In particular, `min_de=0.03` gives a minimum policy-covariance eigenvalue of `2.0 × 0.03 = 0.06`, below the benchmark PE threshold of 0.15. The PE-preserving grid instead uses `min_de ∈ {0.15, 0.10, 0.075}`.
+
+The residual-collapse metric uses the stronger of the linear and nonlinear evaluators. Averaging the two would allow a near-chance linear score to hide substantial nonlinear separability.
+
+Implementation note: the current reference evaluators are full-batch logistic classifiers on standardized raw and random Fourier features. Historical documents that call them “linear SVM” and “RFF-SVM” should be corrected or read as referring to these logistic implementations.
+
 ---
 
 ## Positioning
@@ -136,17 +180,26 @@ for studying the gap between:
 * external evidence quality,
 * internal attribution fidelity.
 
+No ABHT agent was run in Stage 2e. The negative Stage 2e result therefore does not establish that ABHT already covers this geometry; that requires a separate direct baseline experiment.
+
 ---
 
 ## Current Status
 
-Stage 1–2d: Completed
+Stage 1–2d: Completed.
 
-Stage 2e:
+Stage 2e PE-preserving exploratory grid: Completed.
 
-Residual AUC collapse inside the adaptive loop remains an open question.
+Stage 2e outcome:
 
-Both positive and negative outcomes are scientifically informative.
+* Endogenous attribution failure: reproduced.
+* Directional depletion with PE and energy preservation: reproduced.
+* External residual AUC collapse inside the adaptive loop: not observed in the tested grid.
+* Confirmatory fresh-seed phase: not triggered because there was no exploratory candidate.
+
+The current supported claim remains narrower than external indistinguishability:
+
+> An adaptive agent can be internally wrong while its residual trajectories remain externally classifiable. External evidence quality and internal attribution fidelity are distinct quantities.
 
 ---
 
